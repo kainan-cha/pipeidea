@@ -1,0 +1,8 @@
+{"id":"canary_bloom_parking","mode":"bloom","seeds":["parking"],"stimulus":"Random word: mycelium","notes":"Grounded in the taste examples; should strongly distinguish alive from dead."}
+{"id":"canary_bloom_email","mode":"bloom","seeds":["email"],"stimulus":"Random fact: Honey never spoils.","notes":"Tests whether the profile can break the timeline assumption and stay vivid."}
+{"id":"canary_bloom_restaurants","mode":"bloom","seeds":["restaurants"],"stimulus":"Random word: resonance","notes":"Tests ambition plus sensory specificity."}
+{"id":"canary_bloom_public_libraries","mode":"bloom","seeds":["public libraries"],"stimulus":"Random fact: Sharks are older than trees.","notes":"Should produce civic-scale ideas, not just service upgrades."}
+{"id":"canary_bloom_sleep","mode":"bloom","seeds":["sleep"],"stimulus":"Random word: labyrinth","notes":"Should invite rich cross-domain analogy."}
+{"id":"canary_collision_fungi_skincare","mode":"collision","seeds":["fungal networks","luxury skincare"],"stimulus":"Random fact: Slime molds can solve mazes.","notes":"Tests true load-bearing collision behavior."}
+{"id":"canary_collision_jazz_tax","mode":"collision","seeds":["jazz improvisation","tax policy"],"stimulus":"Random word: sedimentation","notes":"Hard collision; both inputs should matter."}
+{"id":"canary_collision_archaeology_cloud","mode":"collision","seeds":["archaeology","cloud infrastructure"],"stimulus":"Random fact: Venice was built on petrified tree trunks.","notes":"Tests structural depth over decorative mashup."}

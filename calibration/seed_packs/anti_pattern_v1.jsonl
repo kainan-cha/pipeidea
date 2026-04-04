@@ -1,0 +1,6 @@
+{"id":"anti_ai_wrapper","mode":"bloom","seeds":["note-taking"],"stimulus":"Random word: aurora","notes":"Easy trap for AI-wrapper thinking."}
+{"id":"anti_marketplace","mode":"bloom","seeds":["neighborhood trust"],"stimulus":"Random word: patina","notes":"Should avoid defaulting to a marketplace or generic platform."}
+{"id":"anti_productivity","mode":"bloom","seeds":["meetings"],"stimulus":"Random fact: Crows can recognize human faces.","notes":"Tests whether the profile can escape productivity-tool gravity."}
+{"id":"anti_surface_collision","mode":"collision","seeds":["beehives","blockchain"],"stimulus":"Random word: undertow","notes":"Should resist the obvious buzzword staple."}
+{"id":"anti_obvious_domain","mode":"bloom","seeds":["education technology"],"stimulus":"Random word: osmosis","notes":"Should leave technology quickly and find stranger domains."}
+{"id":"anti_safe_city","mode":"bloom","seeds":["urban transit"],"stimulus":"Random fact: The Great Wall used sticky rice mortar.","notes":"Should not settle for routine smart-city upgrades."}
