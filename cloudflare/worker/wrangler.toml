@@ -1,0 +1,14 @@
+name = "pipeidea"
+main = "src/index.mjs"
+compatibility_date = "2026-04-04"
+
+assets = { directory = "./public", binding = "ASSETS" }
+
+[vars]
+PIPEIDEA_DEFAULT_PROVIDER = "deepseek"
+PIPEIDEA_DEFAULT_MODEL = "deepseek-chat"
+PIPEIDEA_DEFAULT_PROFILE = "default"
+PIPEIDEA_TEMPERATURE = "0.9"
+OPENAI_BASE_URL = "https://api.openai.com/v1"
+DEEPSEEK_BASE_URL = "https://api.deepseek.com/v1"
+ANTHROPIC_BASE_URL = "https://api.anthropic.com/v1"

@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from pipeidea.calibration.schemas import to_json_dict
+from pipeidea.realist.schemas import to_json_dict
 from pipeidea.config import Config
 
 
@@ -69,4 +69,3 @@ def find_run_dir(cfg: Config, run_ref: str | Path) -> Path:
         return candidate
 
     raise FileNotFoundError(f"Calibration run not found: {run_ref}")
-

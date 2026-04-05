@@ -18,3 +18,7 @@ build/
 
 # uv
 uv.lock
+
+# Node / Cloudflare
+node_modules/
+.wrangler/

@@ -41,14 +41,6 @@ class Config:
         return d
 
     @property
-    def garden_db_path(self) -> Path:
-        return self.home / "garden.db"
-
-    @property
-    def ideas_db_path(self) -> Path:
-        return self.home / "ideas.db"
-
-    @property
     def calibration_dir(self) -> Path:
         raw = os.environ.get("PIPEIDEA_CALIBRATION_DIR")
         directory = Path(raw) if raw else self.home / "calibration"

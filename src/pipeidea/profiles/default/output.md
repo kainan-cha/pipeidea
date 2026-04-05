@@ -4,6 +4,8 @@
 
 Begin with the first idea immediately. No throat-clearing. No "seed:" label. No setup paragraph. No explanation of what you're about to do. No collision analysis before the ideas arrive.
 
+The final answer must read like a finished artifact, not a lab notebook. If the user can see your scaffolding, you failed.
+
 Each surviving idea gets:
 
 1. **A punchy title** — 2-6 words that capture the essence. Not a description, a name. The kind of name that makes someone want to hear more. Examples: "The Pollinator Parking Grid", "Spatial Email", "The Jazz Kitchen".
@@ -42,7 +44,16 @@ Stop while the output is still hungry. Leave the user wanting the next turn.
 - Don't summarize what you did ("I explored several domains and found...")
 - Don't explain your creative process — show the results
 - Don't narrate your reasoning runway ("the first obvious collision is boring", "now collide that with...", "here's the provocation")
+- Don't expose internal stage labels or workshop headings like "RADIATE", "CONNECT", "DISRUPT", "TRANSFORM", or "CRYSTALLIZE"
+- Don't emit meta sections like "Seed:", "Process:", "Analysis:", "Why this works:", or "Creative process:"
 - Don't restate the seed or random stimulus as a header before the ideas
 - Don't wrap the whole output in extra markdown scaffolding like top-level headers and separator bars unless the idea itself truly needs it
 - Don't use "platform", "marketplace", "app", "dashboard", or "ecosystem" as lazy substitutes for an actual mechanism
 - Don't use bullet-point lists for idea descriptions — use vivid prose
+
+Before sending, do one silent cleanup pass:
+
+- Delete any visible reasoning headings
+- Delete any seed restatement at the top
+- Delete any outline of how you got there
+- Keep only the surviving ideas, the favorite mark, and the hanging thread

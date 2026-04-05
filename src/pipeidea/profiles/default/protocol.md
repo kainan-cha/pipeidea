@@ -2,6 +2,8 @@
 
 This is not a rigid sequence. It's a natural cognitive rhythm — light structural anchors you can lean on, skip, reorder, or loop through. The messiness between the anchors is where the real creativity happens.
 
+These stage names are private mental handles, not output sections. Never print them. Never show them as headings. Never narrate the protocol to the user.
+
 ## RADIATE
 
 Cast out in all directions simultaneously. Find the seed's echoes in 5+ distant domains. Don't pick the obvious ones — reach for the domains that have no business being connected to this seed.
@@ -39,6 +41,8 @@ From the chaos of radiation, connection, disruption, and transformation, ideas e
 
 The user should see the artifact, not the workshop. If you catch yourself writing lines like "the first obvious collision is boring" or "now collide that with..." cut them before the final output.
 
+Hard rule: the final output must not contain the words "RADIATE", "CONNECT", "DISRUPT", "TRANSFORM", or "CRYSTALLIZE" unless the user explicitly asks about your process.
+
 ## How to Use This Protocol
 
 - You might spend 80% of your energy on RADIATE and barely touch TRANSFORM
@@ -48,3 +52,5 @@ The user should see the artifact, not the workshop. If you catch yourself writin
 - You might CRYSTALLIZE mid-process, realizing you already have the idea and everything else is noise
 
 All of this is correct behavior. The protocol is a toolkit, not a recipe.
+
+Use it silently.

@@ -1,6 +1,5 @@
 """Profile management: list, create, resolve inheritance, bootstrap defaults."""
 
-import shutil
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -23,8 +22,8 @@ SOUL_FILES = [
     "modes/revisit.md",
 ]
 
-# Path to built-in defaults shipped with the package
-_DEFAULTS_DIR = Path(__file__).parent / "defaults" / "profiles"
+# Path to built-in profiles shipped with the package
+_DEFAULTS_DIR = Path(__file__).resolve().parents[1] / "profiles"
 
 
 @dataclass(frozen=True)
@@ -48,26 +47,20 @@ class ProfileSnapshot:
 
 
 def ensure_defaults(cfg: Config) -> None:
-    """Copy built-in default profiles to ~/.pipeidea/profiles/ if they don't exist."""
-    profiles_dir = cfg.profiles_dir
-    default_dir = profiles_dir / "default"
-
-    if default_dir.exists():
-        return
-
-    # Copy the entire defaults directory
-    if _DEFAULTS_DIR.exists():
-        shutil.copytree(_DEFAULTS_DIR, profiles_dir, dirs_exist_ok=True)
+    """Ensure the user profile directory exists for custom overrides."""
+    cfg.profiles_dir.mkdir(parents=True, exist_ok=True)
 
 
 def list_profiles(cfg: Config) -> list[str]:
     """Return names of all available profiles."""
-    profiles_dir = cfg.profiles_dir
-    if not profiles_dir.exists():
-        return []
-    return sorted(
-        d.name for d in profiles_dir.iterdir() if d.is_dir() and not d.name.startswith(".")
-    )
+    names = {
+        d.name for d in cfg.profiles_dir.iterdir() if d.is_dir() and not d.name.startswith(".")
+    }
+    if _DEFAULTS_DIR.exists():
+        names.update(
+            d.name for d in _DEFAULTS_DIR.iterdir() if d.is_dir() and not d.name.startswith(".")
+        )
+    return sorted(names)
 
 
 def _resolve_profile_dirs(
@@ -77,11 +70,22 @@ def _resolve_profile_dirs(
     default_profile_dir: Path | None = None,
 ) -> tuple[Path, Path | None]:
     """Resolve active/fallback profile directories."""
-    active_dir = active_profile_dir or cfg.profiles_dir / profile
+    bundled_default_dir = _DEFAULTS_DIR / "default"
+    if active_profile_dir is not None:
+        active_dir = active_profile_dir
+    elif profile == "default" and bundled_default_dir.exists():
+        active_dir = bundled_default_dir
+    else:
+        active_dir = cfg.profiles_dir / profile
 
     fallback_dir: Path | None = None
     if profile != "default":
-        fallback_dir = default_profile_dir or cfg.profiles_dir / "default"
+        if default_profile_dir is not None:
+            fallback_dir = default_profile_dir
+        elif bundled_default_dir.exists():
+            fallback_dir = bundled_default_dir
+        else:
+            fallback_dir = cfg.profiles_dir / "default"
     elif default_profile_dir is not None:
         fallback_dir = default_profile_dir
 

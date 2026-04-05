@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>pipeidea</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <main class="book">
+    <section id="pages" aria-live="polite"></section>
+    <footer class="composer">
+      <form id="idea-form">
+        <div class="composer-label">Start with a seed, or type <strong>help</strong> to see commands.</div>
+        <label class="input-shell" for="command">
+          <input id="command" autocomplete="off" placeholder='Try "public libraries" or "collide &quot;jazz&quot; &quot;tax policy&quot;"'>
+        </label>
+      </form>
+      <div class="hint">Enter submits. <code>clear</code> resets the page.</div>
+    </footer>
+  </main>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

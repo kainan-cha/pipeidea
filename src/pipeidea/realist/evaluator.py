@@ -6,8 +6,8 @@ import json
 import re
 from typing import Any
 
-from pipeidea.calibration.mappers import map_failure_tags
-from pipeidea.calibration.schemas import CreativeSample, IdeaNote, RealistAssessment, clamp_score
+from pipeidea.realist.mappers import map_failure_tags
+from pipeidea.realist.schemas import CreativeSample, IdeaNote, RealistAssessment, clamp_score
 from pipeidea.config import Config
 from pipeidea.providers.registry import get_provider
 

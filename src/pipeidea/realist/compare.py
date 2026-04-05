@@ -5,8 +5,8 @@ from __future__ import annotations
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from pipeidea.calibration.artifacts import artifact_paths, load_json, load_jsonl
-from pipeidea.calibration.schemas import ComparisonReport, RealistAssessment, RunManifest
+from pipeidea.realist.artifacts import artifact_paths, load_json, load_jsonl
+from pipeidea.realist.schemas import ComparisonReport, RealistAssessment, RunManifest
 
 
 def _load_manifest(run_dir: Path) -> RunManifest:

@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 from collections.abc import Callable
 
-from pipeidea.calibration.artifacts import (
+from pipeidea.realist.artifacts import (
     append_jsonl,
     artifact_paths,
     ensure_directory,
@@ -19,9 +19,9 @@ from pipeidea.calibration.artifacts import (
     load_jsonl,
     write_json,
 )
-from pipeidea.calibration.compare import render_comparison_markdown
-from pipeidea.calibration.realist import assess_sample
-from pipeidea.calibration.schemas import (
+from pipeidea.realist.compare import render_comparison_markdown
+from pipeidea.realist.evaluator import assess_sample
+from pipeidea.realist.schemas import (
     ComparisonReport,
     CreativeSample,
     PromotionRecord,
@@ -34,7 +34,7 @@ from pipeidea.core import run_creative_with_trace
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 REPO_CALIBRATION_DIR = REPO_ROOT / "calibration"
-REPO_DEFAULT_PROFILE_DIR = REPO_ROOT / "src" / "pipeidea" / "soul" / "defaults" / "profiles" / "default"
+REPO_DEFAULT_PROFILE_DIR = REPO_ROOT / "src" / "pipeidea" / "profiles" / "default"
 DEFAULT_RUBRIC_NAME = "realist"
 
 

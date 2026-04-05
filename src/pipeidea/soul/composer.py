@@ -184,30 +184,6 @@ def compose_prompt(
     )
 
 
-def compose_system_prompt(
-    cfg: Config,
-    profile: str,
-    mode: str,
-    random_stimulus: str | None = None,
-    garden_echoes: list[str] | None = None,
-    web_stimuli: list[str] | None = None,
-    active_profile_dir: Path | None = None,
-    default_profile_dir: Path | None = None,
-) -> str:
-    """Backwards-compatible helper returning only the prompt string."""
-    composition = compose_prompt(
-        cfg=cfg,
-        profile=profile,
-        mode=mode,
-        random_stimulus=random_stimulus,
-        garden_echoes=garden_echoes,
-        web_stimuli=web_stimuli,
-        active_profile_dir=active_profile_dir,
-        default_profile_dir=default_profile_dir,
-    )
-    return composition.system_prompt
-
-
 def compose_user_message(seeds: list[str], mode: str) -> str:
     """Build the user message for the AI call.
 

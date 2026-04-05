@@ -1,0 +1,13 @@
+{
+  "name": "pipeidea-cloudflare-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:profiles": "python3 ../../scripts/build_profiles_bundle.py",
+    "dev": "npm run build:profiles && wrangler dev",
+    "deploy": "npm run build:profiles && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

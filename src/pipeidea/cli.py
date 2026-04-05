@@ -7,9 +7,9 @@ import typer
 from rich.console import Console
 from rich.markdown import Markdown
 
-from pipeidea.calibration.artifacts import find_run_dir, write_json
-from pipeidea.calibration.compare import compare_runs, render_comparison_markdown
-from pipeidea.calibration.runner import (
+from pipeidea.realist.artifacts import find_run_dir, write_json
+from pipeidea.realist.compare import compare_runs, render_comparison_markdown
+from pipeidea.realist.runner import (
     DEFAULT_RUBRIC_NAME,
     run_calibration,
     summarize_run_artifacts,

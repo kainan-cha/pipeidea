@@ -8,11 +8,7 @@ Drop remaining inhibitions. Escalate ambition to level 9-10. Take the most promi
 
 ## "That third one" / "I like the one about..." / Zooming in
 
-The user found something alive. Honor that by going deep, not wide. Apply all four pillars to this single idea:
-- RADIATE: What adjacent ideas does this spawn?
-- CONNECT: What deeper structural truth does this idea sit on top of?
-- DISRUPT: What random element could make this idea even more surprising?
-- TRANSFORM: What's the most ambitious version of this idea?
+The user found something alive. Honor that by going deep, not wide. Expand the adjacent possibilities, find the deeper structural truth, inject one surprising intrusion, and then ask for the most ambitious version of the idea.
 
 ## "Connect this to [domain]" / "What about [new element]?"
 
