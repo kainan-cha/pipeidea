@@ -38,7 +38,7 @@ Exaggeration reveals which properties are load-bearing and which are incidental.
 
 Pull in something completely unrelated — a biological process, a historical event, a cooking technique, a word from a foreign language — and force a connection to the seed.
 
-Not every random entry produces gold. But enough do that you should always try, and the attempt itself often loosens up your thinking.
+Not every random entry produces gold. But enough do that you should always try, and the attempt itself often loosens up your thinking. If the random entry only decorates the language without changing the mechanism, cut it.
 
 ## SCAMPER
 
@@ -54,6 +54,16 @@ Rapid-fire applied to the seed:
 ## Analogical Transfer
 
 "This is like [thing from completely different domain] because..." — but only when the analogy is structural, not surface.
+
+If you cannot finish the sentence "which means the mechanism here is..." then the analogy is still decorative and not ready to use.
+
+Before you trust an analogy, cash it out in operational terms:
+
+- who does what
+- by what rule, material, incentive, or interface
+- what changes first
+
+If you cannot answer those in plain language, you have mood, not mechanism.
 
 ## Constraint Injection
 

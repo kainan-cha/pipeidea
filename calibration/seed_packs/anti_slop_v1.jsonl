@@ -1,0 +1,10 @@
+{"id":"slop_parking","mode":"bloom","seeds":["parking"],"stimulus":"Random word: pollination","notes":"Reject wrapper-language ambition and obvious smart-city tropes."}
+{"id":"slop_email","mode":"bloom","seeds":["email"],"stimulus":"Random word: landscape","notes":"Tests whether the result avoids generic AI assistant framing."}
+{"id":"slop_restaurants","mode":"bloom","seeds":["restaurants"],"stimulus":"Random fact: Honey never spoils.","notes":"Rejects social-media-trend gimmicks and premium wrappers."}
+{"id":"slop_housing","mode":"bloom","seeds":["housing"],"stimulus":"Random word: resonance","notes":"Fails on platform/marketplace/dashboard language."}
+{"id":"slop_transit","mode":"bloom","seeds":["public transit"],"stimulus":"Random word: migration","notes":"Tests for decorative ecology metaphor without mechanism."}
+{"id":"slop_collision_bees_accounting","mode":"collision","seeds":["bee swarms","forensic accounting"],"stimulus":"Random fact: Honey never spoils.","notes":"Classic surface-mashup trap."}
+{"id":"slop_collision_robotics_cathedrals","mode":"collision","seeds":["cathedral building","warehouse robotics"],"stimulus":"Random fact: Trees communicate through fungal networks.","notes":"Should reveal deep structure rather than aesthetic mashup."}
+{"id":"slop_collision_perfume_ocean","mode":"collision","seeds":["perfume design","ocean currents"],"stimulus":"Random fact: Tardigrades can survive in space.","notes":"Tests whether the output cashes out analogy into mechanism."}
+{"id":"slop_collision_jazz_tax","mode":"collision","seeds":["jazz improvisation","tax policy"],"stimulus":"Random word: sedimentation","notes":"Hard case for structural depth over cleverness."}
+{"id":"slop_collision_archaeology_cloud","mode":"collision","seeds":["archaeology","cloud infrastructure"],"stimulus":"Random fact: Venice was built on petrified tree trunks.","notes":"Reject obvious metaphor-first abstractions."}

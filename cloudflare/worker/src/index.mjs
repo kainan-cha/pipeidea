@@ -2,6 +2,7 @@ import { AVAILABLE_PROVIDERS, streamFromProvider } from "./providers.mjs";
 import { parseCommand, helpText } from "./commands.mjs";
 import { composePrompt, composeUserMessage, formatProfile, listProfiles } from "./prompt.mjs";
 import { getRandomStimulus } from "./random-stimulus.mjs";
+import { assessPromptSensitivity } from "./sensitivity.mjs";
 
 function jsonResponse(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
@@ -77,17 +78,28 @@ async function handleStreamRequest(request, env, ctx) {
     try {
       const profile = parsed.profile || env.PIPEIDEA_DEFAULT_PROFILE || "default";
       const randomStimulus = getRandomStimulus();
+      const sensitivity = assessPromptSensitivity(parsed.seeds, parsed.mode);
       const prompt = composePrompt({
         profile,
         mode: parsed.mode,
-        randomStimulus
+        randomStimulus,
+        runtimeGuidance: sensitivity.reason
       });
       const userMessage = composeUserMessage(parsed.seeds, parsed.mode);
 
       await emit(writer, { type: "start", ok: true, output: "Thinking..." });
 
       let fullOutput = "";
-      for await (const chunk of streamFromProvider(env, parsed.provider, prompt.systemPrompt, userMessage, parsed.wild)) {
+      for await (
+        const chunk of streamFromProvider(
+          env,
+          parsed.provider,
+          prompt.systemPrompt,
+          userMessage,
+          parsed.wild,
+          sensitivity
+        )
+      ) {
         fullOutput += chunk;
         await emit(writer, { type: "chunk", delta: chunk });
       }

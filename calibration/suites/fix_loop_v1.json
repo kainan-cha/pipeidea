@@ -1,0 +1,90 @@
+{
+  "name": "fix-loop-v1",
+  "profile": "default",
+  "stages": [
+    {
+      "name": "discipline-fast",
+      "type": "heuristic",
+      "pack": "discipline_v1",
+      "provider": "deepseek",
+      "concurrency": 4,
+      "gates": {
+        "max_pipeline_bug": 0,
+        "max_failure_tags": {
+          "drifts_off_topic": 3,
+          "format_drift": 6,
+          "too_many_ideas": 4
+        },
+        "min_average_axes": {
+          "topic_discipline": 0.55,
+          "mode_fidelity": 0.6
+        }
+      }
+    },
+    {
+      "name": "randomness-fast",
+      "type": "heuristic",
+      "pack": "randomness_v1",
+      "provider": "deepseek",
+      "concurrency": 4,
+      "gates": {
+        "max_pipeline_bug": 0,
+        "max_failure_tags": {
+          "randomness_absent": 4,
+          "drifts_off_topic": 2
+        },
+        "min_average_axes": {
+          "topic_discipline": 0.55,
+          "randomness_integration": 0.45
+        }
+      }
+    },
+    {
+      "name": "output-fast",
+      "type": "heuristic",
+      "pack": "format_v1",
+      "provider": "deepseek",
+      "concurrency": 4,
+      "gates": {
+        "max_pipeline_bug": 0,
+        "max_failure_tags": {
+          "format_drift": 4,
+          "too_many_ideas": 3
+        },
+        "min_average_axes": {
+          "output_contract": 0.55
+        }
+      }
+    },
+    {
+      "name": "anti-slop-fast",
+      "type": "heuristic",
+      "pack": "anti_slop_v1",
+      "provider": "deepseek",
+      "concurrency": 4,
+      "gates": {
+        "max_pipeline_bug": 0,
+        "max_failure_tags": {
+          "generic_futurism": 3,
+          "surface_analogy": 3,
+          "drifts_off_topic": 2
+        },
+        "min_average_axes": {
+          "structural_depth": 0.5,
+          "topic_discipline": 0.55
+        }
+      }
+    }
+  ],
+  "final_acceptance": {
+    "type": "ai",
+    "count": 200,
+    "mix": {
+      "discipline_v1": 60,
+      "randomness_v1": 40,
+      "format_v1": 30,
+      "anti_slop_v1": 30,
+      "fuzz_1000_v1": 40
+    }
+  }
+}

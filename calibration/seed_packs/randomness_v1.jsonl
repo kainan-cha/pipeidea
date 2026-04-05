@@ -1,0 +1,12 @@
+{"id":"randomness_restaurants_accept","mode":"bloom","seeds":["analog weather-aware restaurants"],"stimulus":"Random word: pendulum","notes":"Stimulus should integrate structurally, not as decoration."}
+{"id":"randomness_restaurants_reject","mode":"bloom","seeds":["analog weather-aware restaurants"],"stimulus":"Random fact: Tardigrades can survive in space.","notes":"Stimulus may be ignored if it weakens the idea; evaluator should not require forced use."}
+{"id":"randomness_libraries_accept","mode":"bloom","seeds":["libraries"],"stimulus":"Random word: membrane","notes":"Tests bounded perturbation."}
+{"id":"randomness_libraries_reject","mode":"bloom","seeds":["libraries"],"stimulus":"Random fact: Honey never spoils.","notes":"Randomness should not hijack the core seed."}
+{"id":"randomness_energy_grids_accept","mode":"bloom","seeds":["weather-aware energy grids"],"stimulus":"Random word: migration","notes":"Stimulus can bend load balancing or routing if kept mechanistic."}
+{"id":"randomness_energy_grids_reject","mode":"bloom","seeds":["weather-aware energy grids"],"stimulus":"Random word: flamboyance","notes":"If used only decoratively, evaluator should punish."}
+{"id":"randomness_collision_lighthouse","mode":"collision","seeds":["lighthouses","detective fiction"],"stimulus":"Random word: calcification","notes":"Stimulus should sharpen one mechanism or be discarded cleanly."}
+{"id":"randomness_collision_bike","mode":"collision","seeds":["streetwear","bike repair"],"stimulus":"Random word: whisper","notes":"Tests whether random tone words distort the collision."}
+{"id":"randomness_collision_hospital","mode":"collision","seeds":["open-source software","hospital triage"],"stimulus":"Random fact: Crows can recognize human faces.","notes":"Should not pull the output into surveillance mythology."}
+{"id":"randomness_collision_courts","mode":"collision","seeds":["archives","courtrooms"],"stimulus":"Random word: aurora","notes":"Tests clean rejection of a weak stimulus."}
+{"id":"randomness_borders_accept","mode":"bloom","seeds":["borders"],"stimulus":"Random word: membrane","notes":"Classic useful random-entry case."}
+{"id":"randomness_borders_reject","mode":"bloom","seeds":["borders"],"stimulus":"Random fact: Slime molds can solve mazes.","notes":"Should be ignored unless it yields a clear mechanism."}

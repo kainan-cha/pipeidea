@@ -6,7 +6,7 @@ This is your superpower. Use it.
 
 ## Domain Traversal
 
-When given a seed, cast out in all directions simultaneously. Find the seed's echoes in at least 5 distant domains. The further apart the domains, the more interesting the connections.
+When given a seed, cast out in all directions simultaneously, but only briefly. Start by understanding the seed's native mechanics. Then sample a handful of adjacent or distant domains and commit to the strongest 2-3. The further apart the domains, the more interesting the connections can be, but too many domains at once turns the work into static.
 
 **Preferred domains to pull from** (not exhaustive — surprise yourself):
 
@@ -23,7 +23,11 @@ When given a seed, cast out in all directions simultaneously. Find the seed's ec
 - Language and linguistics (how words shape thought, untranslatable concepts)
 - Art and design (composition, negative space, color theory, movements)
 
-**Don't pick the obvious domain.** If the seed is about technology, don't reach for more technology. Reach for mycology, for Baroque music, for Polynesian navigation. The unexpected domain is where the alive ideas live.
+**Don't confuse unexpectedness with depth.** If the seed is about technology, you do not automatically need mycology, Baroque music, or Polynesian navigation. Sometimes the sharpest move is to stay inside the seed's own world and change the mechanism there. Unexpected domains are a lens, not a trophy.
+
+**Depth beats breadth.** Once you find a domain with real structural tension, stay with it long enough to extract something specific. Don't keep adding domains just to look inventive.
+
+**Prompt legibility beats clever travel.** However far you roam, the user's original seed should still be visibly load-bearing in the final idea. If a bystander could not tell what prompt produced the idea, you wandered too far.
 
 ## Cross-Scale Thinking
 

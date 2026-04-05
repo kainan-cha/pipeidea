@@ -7,14 +7,19 @@ FAILURE_FILE_MAP: dict[str, list[str]] = {
     "wrong_profile": ["identity.md", "dialogue.md"],
     "wrong_mode": ["mode-specific"],
     "format_drift": ["output.md"],
+    "template_output": ["output.md", "protocol.md"],
     "voice_drift": ["identity.md", "dialogue.md"],
     "too_incremental": ["ambition.md", "protocol.md"],
     "surface_analogy": ["knowledge.md", "protocol.md", "taste.md"],
+    "mechanism_missing": ["taste.md", "techniques.md", "output.md"],
     "generic_futurism": ["taste.md", "ambition.md"],
     "not_vivid": ["output.md", "identity.md"],
     "too_many_ideas": ["output.md", "taste.md"],
     "favorite_is_weak": ["output.md", "taste.md"],
+    "favorite_undercommitted": ["output.md", "taste.md"],
     "thread_missing": ["output.md", "dialogue.md"],
+    "ending_lacks_pull": ["output.md", "dialogue.md"],
+    "drifts_off_topic": ["knowledge.md", "protocol.md", "taste.md"],
     "randomness_overwhelmed": ["randomness.md", "protocol.md"],
     "randomness_absent": ["randomness.md", "protocol.md"],
     "collision_not_load_bearing": ["modes/collision.md", "techniques.md"],
@@ -33,6 +38,9 @@ FAILURE_DIRECTION_MAP: dict[str, list[str]] = {
     "format_drift": [
         "Reassert the output contract and trim any extra explanation or list-like scaffolding."
     ],
+    "template_output": [
+        "Collapse repeated titled cards into one prose-led artifact and cut reflex labels."
+    ],
     "voice_drift": [
         "Restore conviction, energy, and anti-hedging language without flattening the tone."
     ],
@@ -41,6 +49,9 @@ FAILURE_DIRECTION_MAP: dict[str, list[str]] = {
     ],
     "surface_analogy": [
         "Ask for deeper structural bridges instead of shared words or decorative mashups."
+    ],
+    "mechanism_missing": [
+        "Force every surviving idea to explain who does what and what changes first in plain language."
     ],
     "generic_futurism": [
         "Sharpen the ban on buzzword wrappers and force a vivid mechanism in the world."
@@ -54,8 +65,17 @@ FAILURE_DIRECTION_MAP: dict[str, list[str]] = {
     "favorite_is_weak": [
         "Make the profile choose a stronger favorite instead of distributing conviction evenly."
     ],
+    "favorite_undercommitted": [
+        "Make the favorite unmistakable and let the strongest idea carry more of the answer."
+    ],
     "thread_missing": [
         "End on a live question or opening instead of closing the loop too neatly."
+    ],
+    "ending_lacks_pull": [
+        "Replace the closing summary with a final sentence that creates forward pull."
+    ],
+    "drifts_off_topic": [
+        "Constrain the search radius and force the idea to stay legibly attached to the user's actual prompt."
     ],
     "randomness_overwhelmed": [
         "Let randomness disrupt the path without destroying coherence or profile identity."

@@ -1,0 +1,8 @@
+{"id":"format_libraries","mode":"bloom","seeds":["libraries"],"stimulus":"Random word: membrane","notes":"Should produce one or two curated ideas, not three matching cards."}
+{"id":"format_restaurants","mode":"bloom","seeds":["analog weather-aware restaurants"],"stimulus":"Random word: pendulum","notes":"Tests resistance to repeated title/why/domains template."}
+{"id":"format_energy_grids","mode":"bloom","seeds":["weather-aware energy grids"],"stimulus":"Random fact: A group of flamingos is called a flamboyance.","notes":"Should avoid overly polished multi-card layout."}
+{"id":"format_water_storage","mode":"bloom","seeds":["communal water storage"],"stimulus":"Random fact: Octopuses have three hearts.","notes":"Tests few-better curation."}
+{"id":"format_collision_lighthouse","mode":"collision","seeds":["lighthouses","detective fiction"],"stimulus":"Random word: calcification","notes":"Collision should not default to three equally-weighted blocks."}
+{"id":"format_collision_bike","mode":"collision","seeds":["streetwear","bike repair"],"stimulus":"Random word: whisper","notes":"Tests whether collision overproduces."}
+{"id":"format_bathrooms","mode":"bloom","seeds":["public bathrooms"],"stimulus":"Random word: fracture","notes":"Should stay lean even on easy-to-riff prompts."}
+{"id":"format_supply_chains","mode":"bloom","seeds":["informal civic supply chains"],"stimulus":"Random word: pollination","notes":"Looks for separators, repeated headings, and block duplication."}

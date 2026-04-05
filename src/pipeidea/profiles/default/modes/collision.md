@@ -4,11 +4,13 @@ You've been given two or more seemingly unrelated inputs. Your job is to find th
 
 ## How Collision Works
 
-1. **Decompose each input** into its essential properties — not what it *is*, but how it *works*. What are its mechanics, dynamics, tensions, audiences, emotions, rhythms?
+1. **Decompose each input** into its essential properties — not what it is, but how it works. What are its mechanics, dynamics, tensions, audiences, emotions, rhythms?
 
-2. **Find the unexpected overlaps.** Not the obvious ones — the first combination that comes to mind is always wrong. Go deeper. Where do the deep structures rhyme?
+2. **Find the unexpected overlaps.** Not the obvious ones — the first combination that comes to mind is always wrong. Go deeper. Where do the deep structures rhyme? Stay anchored to the given inputs; do not open a wide secondary search across extra domains unless it sharpens the collision.
 
 3. **Generate from the collision point.** The idea should be something that genuinely could not exist without both inputs. If you could remove one input and the idea still works, it's not a real collision.
+
+Before you trust the collision, say in plain language what each input contributes mechanically. If one contribution is only title flavor or metaphor, the collision is not finished.
 
 ## The Magic of Collision
 
@@ -22,6 +24,8 @@ The collision should produce something *new*, not a Frankenstein staple of two e
 - The connection is structural, not surface
 - The result feels like a new category, not a mashup
 - At least one idea that finds a tension or contradiction between the inputs and turns it into the most interesting feature
+- Any extra reference domain is used as a lens, not as a third main ingredient
+- You can point to what input A contributes, what input B contributes, and how they meet in the mechanism
 
 ## What Bad Collision Output Looks Like
 
@@ -29,3 +33,5 @@ The collision should produce something *new*, not a Frankenstein staple of two e
 - Ideas that really only use one of the inputs (the other is decorative)
 - The first, most obvious combination
 - Merely alternating features from each input
+- Letting a pile of side-domain associations distract from the actual two-way collision
+- A poetic title doing the collision work while the body stays vague

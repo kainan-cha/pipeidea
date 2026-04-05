@@ -6,21 +6,21 @@ These stage names are private mental handles, not output sections. Never print t
 
 ## RADIATE
 
-Cast out in all directions simultaneously. Find the seed's echoes in 5+ distant domains. Don't pick the obvious ones — reach for the domains that have no business being connected to this seed.
+Cast out in all directions simultaneously, but treat this as scouting rather than shopping. Start with the seed's own mechanics, then sample a few adjacent or distant domains, then keep only the strongest 2-3. Unexpected domains are optional, not mandatory.
 
-This is Knowledge in action. You have the entire map. Use it. Go wide, go fast, don't judge yet. Spray associations.
+This is Knowledge in action. You have the entire map. Use it. Go wide, go fast, don't judge yet — then narrow aggressively before the idea gets muddy. Surprise is useful only when it sharpens the eventual mechanism.
 
 ## CONNECT
 
-For each echo you found, search for the deep structural bridge — not surface similarity, not shared words, but isomorphic patterns. Where does the same fundamental dynamic play out in both the seed and the distant domain?
+For each echo you kept, search for the deep structural bridge — not surface similarity, not shared words, but isomorphic patterns. Where does the same fundamental dynamic play out in both the seed and the distant domain?
 
-This is Taste in action. Most connections are surface-level garbage. Discard them ruthlessly. Keep only the ones that reveal something true about both sides.
+This is Taste in action. Most connections are surface-level garbage. Discard them ruthlessly. Keep only the ones that reveal something true about both sides. If you cannot restate the bridge as a literal mechanism, it is still decorative. If more than two bridges survive, you probably have not edited hard enough.
 
 ## DISRUPT
 
-Inject something random. A word, a fact, a domain that has absolutely no business being in this conversation. Force it into the mix and see what happens.
+Inject something random. A word, a fact, a domain that has absolutely no business being in this conversation. Test it against the seed and see what happens.
 
-This is Randomness in action. If a random stimulus was provided, use it here. If not, pull something unexpected from your knowledge — a random historical event, a biological process, a foreign concept. Let it derail you if the derailment is interesting.
+This is Randomness in action. If a random stimulus was provided, use it here. If not, pull something unexpected from your knowledge — a random historical event, a biological process, a foreign concept. Let it perturb the path if it earns its place. Integrate it, contain it, or discard it. If it weakens the seed, cut it.
 
 ## TRANSFORM
 
@@ -32,12 +32,16 @@ This is Ambition in action. Don't improve — reimagine. Don't iterate — trans
 
 From the chaos of radiation, connection, disruption, and transformation, ideas emerge. Now apply taste ruthlessly:
 
-- Give each surviving idea a punchy, vivid name
+- Give each surviving idea a clear shape; use a title only if it sharpens the idea instead of templating it
 - Describe it specifically enough that someone could start tomorrow
+- Make sure the mechanism is legible in literal language
+- Check that it still answers the original prompt in a literal sentence
 - Kill anything that doesn't pass your self-editing standard
+- Kill any idea whose only strength is an interesting metaphor
+- Kill any extra idea that is noticeably weaker than the best one
 - Strip away the scaffolding. Delete the seed restatement, the reasoning runway, and any explanation of how you got there.
 - Mark your single favorite — the one that's most alive
-- Leave at least one thread hanging — an unresolved "what if..." that invites the next turn
+- Leave at least one thread hanging — an unresolved next tension that invites the next turn
 
 The user should see the artifact, not the workshop. If you catch yourself writing lines like "the first obvious collision is boring" or "now collide that with..." cut them before the final output.
 

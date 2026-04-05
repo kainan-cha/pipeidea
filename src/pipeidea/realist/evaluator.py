@@ -21,6 +21,13 @@ BUZZWORD_MARKERS = (
     "assistant",
     "app",
 )
+WRAPPER_MARKERS = (
+    "operating system",
+    "ecosystem",
+    "network",
+    "protocol",
+    "layer",
+)
 TRANSFORM_MARKERS = (
     "replace",
     "reimagine",
@@ -36,16 +43,57 @@ TRANSFORM_MARKERS = (
     "new category",
 )
 STRUCTURAL_MARKERS = (
-    "structure",
-    "pattern",
     "feedback",
-    "ecosystem",
-    "evolution",
-    "symbiosis",
-    "topology",
-    "phase transition",
-    "ritual",
-    "emergence",
+    "loop",
+    "constraint",
+    "queue",
+    "cadence",
+    "threshold",
+    "allocation",
+    "routing",
+    "matching",
+    "handoff",
+    "maintenance",
+    "repair",
+    "inspection",
+    "pricing",
+    "incentive",
+    "governance",
+)
+MECHANISM_MARKERS = (
+    " by ",
+    " through ",
+    " instead of ",
+    " so that ",
+    " using ",
+    " uses ",
+    " lets ",
+    " route",
+    " match",
+    " allocat",
+    " schedul",
+    " price",
+    " fund",
+    " govern",
+    " track",
+    " repair",
+    " maintain",
+    " permit",
+    " inspect",
+)
+METAPHOR_DRIFT_MARKERS = (
+    "like a",
+    "like an",
+    "what if",
+    "worked like",
+    "treated as",
+    "raw material",
+    "ecology of",
+    "organic",
+    "fungi",
+    "mycel",
+    "mortar",
+    "compost",
 )
 CONCRETE_MARKERS = (
     "street",
@@ -65,6 +113,14 @@ CONCRETE_MARKERS = (
     "garden",
 )
 THREAD_MARKERS = ("what if", "opens the door", "and if that works", "this opens", "which means")
+TEMPLATE_LABEL_MARKERS = (
+    "why it's alive",
+    "domains:",
+    "seed:",
+    "process:",
+    "analysis:",
+    "why this works",
+)
 STOPWORDS = {
     "about",
     "after",
@@ -112,11 +168,27 @@ def _extract_keywords(text: str, limit: int = 5) -> list[str]:
     for word in words:
         if word in STOPWORDS:
             continue
-        if word not in keywords:
-            keywords.append(word)
+        normalized = _normalize_token(word)
+        if normalized not in keywords:
+            keywords.append(normalized)
         if len(keywords) >= limit:
             break
     return keywords
+
+
+def _normalize_token(token: str) -> str:
+    token = token.lower().strip()
+    if len(token) > 4 and token.endswith("ies"):
+        return token[:-3] + "y"
+    if len(token) > 4 and token.endswith("es") and not token.endswith("ses"):
+        return token[:-2]
+    if len(token) > 3 and token.endswith("s") and not token.endswith("ss"):
+        return token[:-1]
+    return token
+
+
+def _normalized_token_set(text: str) -> set[str]:
+    return {_normalize_token(token) for token in re.findall(r"[a-zA-Z]{3,}", text.lower())}
 
 
 def _idea_blocks(output: str) -> list[str]:
@@ -155,15 +227,48 @@ def _list_line_count(output: str) -> int:
     return count
 
 
+def _leading_line(block: str) -> str:
+    for line in block.splitlines():
+        stripped = line.strip()
+        if stripped:
+            return stripped
+    return ""
+
+
+def _is_markdown_title_line(line: str) -> bool:
+    stripped = line.strip().replace("🪈", "").strip()
+    if not stripped:
+        return False
+    if re.match(r"^\*\*[^*]+\*\*$", stripped):
+        return True
+    if re.match(r"^#{1,6}\s+\S", stripped):
+        return True
+    return False
+
+
+def _template_metrics(output: str, blocks: list[str]) -> tuple[int, int, int]:
+    label_hits = _count_hits(output, TEMPLATE_LABEL_MARKERS)
+    separator_hits = output.count("\n---\n") + output.count("\n***\n")
+    titled_block_count = sum(
+        1 for block in blocks if _is_markdown_title_line(_leading_line(block))
+    )
+    return titled_block_count, label_hits, separator_hits
+
+
 def _seed_coverage(output: str, seeds: list[str]) -> list[float]:
     lowered = output.lower()
+    output_tokens = _normalized_token_set(output)
     coverage: list[float] = []
     for seed in seeds:
         keywords = _extract_keywords(seed)
         if not keywords:
             coverage.append(1.0 if seed.lower() in lowered else 0.0)
             continue
-        matches = sum(1 for keyword in keywords if keyword in lowered)
+        matches = sum(
+            1
+            for keyword in keywords
+            if keyword in output_tokens or keyword in lowered
+        )
         coverage.append(matches / max(1, len(keywords)))
     return coverage
 
@@ -245,43 +350,59 @@ def _heuristic_assessment(sample: CreativeSample) -> dict[str, Any]:
     list_lines = _list_line_count(output)
     hedge_hits = _count_hits(output, HEDGING_MARKERS)
     buzz_hits = _count_hits(output.lower(), BUZZWORD_MARKERS)
+    wrapper_hits = _count_hits(output.lower(), WRAPPER_MARKERS)
     transform_hits = _count_hits(output.lower(), TRANSFORM_MARKERS)
     structural_hits = _count_hits(output.lower(), STRUCTURAL_MARKERS)
+    mechanism_hits = _count_hits(output.lower(), MECHANISM_MARKERS)
     concrete_hits = _count_hits(output.lower(), CONCRETE_MARKERS)
     seed_coverage = _seed_coverage(output, sample.seeds)
+    avg_seed_coverage = sum(seed_coverage) / max(1, len(seed_coverage))
+    metaphor_drift_hits = _count_hits(output.lower(), METAPHOR_DRIFT_MARKERS)
+    titled_block_count, label_hits, separator_hits = _template_metrics(output, blocks)
+    template_output = titled_block_count >= 2 or separator_hits > 0 or (
+        label_hits >= 2 and len(blocks) >= 2
+    )
 
-    output_contract = 0.45
+    output_contract = 0.48
     if favorite_present:
-        output_contract += 0.15
+        output_contract += 0.12
         strengths.append("The output clearly chose a favorite instead of flattening every idea.")
     else:
         failure_tags.append("favorite_is_weak")
+        failure_tags.append("favorite_undercommitted")
         issues.append("The output never marked a single favorite idea.")
 
     if thread_present:
-        output_contract += 0.15
+        output_contract += 0.12
         strengths.append("The ending leaves a live thread instead of closing the thought completely.")
     else:
         failure_tags.append("thread_missing")
+        failure_tags.append("ending_lacks_pull")
         issues.append("The ending feels closed rather than leaving an unresolved thread.")
 
-    if list_lines > 2:
-        output_contract -= 0.15
+    if list_lines > 2 or label_hits > 0:
+        output_contract -= 0.12
         failure_tags.append("format_drift")
         issues.append("The output leaned on list formatting more than the profile contract wants.")
+
+    if template_output:
+        output_contract -= 0.18
+        failure_tags.append("template_output")
+        failure_tags.append("format_drift")
+        issues.append("The answer still reads like repeated titled cards rather than a prose-led artifact.")
 
     if block_count > 5:
         output_contract -= 0.2
         failure_tags.append("too_many_ideas")
         issues.append("The output likely presented too many idea blocks instead of curating harder.")
-    elif block_count in {2, 3}:
+    elif block_count in {1, 2} and not template_output:
         output_contract += 0.1
         strengths.append("The idea count stayed in the profile's preferred few-better range.")
 
-    ambition = 0.4 + 0.08 * transform_hits - 0.08 * buzz_hits
+    ambition = 0.38 + 0.08 * transform_hits - 0.08 * buzz_hits - 0.05 * wrapper_hits
     if len(output) > 350:
         ambition += 0.05
-    if buzz_hits > 0:
+    if buzz_hits > 0 or (wrapper_hits > 0 and mechanism_hits < 2):
         failure_tags.append("generic_futurism")
         issues.append("The output leaned on generic product or futurist language.")
     if ambition < 0.45:
@@ -308,7 +429,17 @@ def _heuristic_assessment(sample: CreativeSample) -> dict[str, Any]:
     else:
         strengths.append("The voice mostly avoids hedging and sounds committed to its own claims.")
 
-    structural_depth = 0.35 + 0.08 * structural_hits - 0.07 * buzz_hits
+    structural_depth = (
+        0.3
+        + 0.06 * structural_hits
+        + 0.08 * mechanism_hits
+        - 0.07 * buzz_hits
+        - 0.04 * wrapper_hits
+        - 0.04 * max(0, metaphor_drift_hits - 1)
+    )
+    if mechanism_hits < 2 and metaphor_drift_hits > 0:
+        failure_tags.append("mechanism_missing")
+        issues.append("The output leans on analogy or mood without making the mechanism concrete enough.")
     if structural_depth < 0.45:
         failure_tags.append("surface_analogy")
         issues.append("The ideas do not show enough evidence of deep structural bridges.")
@@ -318,15 +449,39 @@ def _heuristic_assessment(sample: CreativeSample) -> dict[str, Any]:
     randomness_integration = 0.55
     if sample.stimulus:
         stimulus_keywords = _extract_keywords(sample.stimulus)
-        stimulus_used = any(keyword in output.lower() for keyword in stimulus_keywords)
-        randomness_integration = 0.75 if stimulus_used else 0.3
+        output_tokens = _normalized_token_set(output)
+        stimulus_used = any(
+            keyword in output_tokens or keyword in output.lower()
+            for keyword in stimulus_keywords
+        )
+        if stimulus_used:
+            randomness_integration = 0.75
+        elif ambition >= 0.5 and structural_depth >= 0.45:
+            randomness_integration = 0.55
+            strengths.append("The random stimulus appears to have been discarded rather than ignored, which is acceptable when the draft stays strong without it.")
+        else:
+            randomness_integration = 0.3
         if stimulus_used:
             strengths.append("The output appears to absorb the injected random stimulus.")
         else:
-            failure_tags.append("randomness_absent")
-            issues.append("The injected random stimulus did not leave a visible trace in the output.")
+            if randomness_integration < 0.5:
+                failure_tags.append("randomness_absent")
+                issues.append("The injected random stimulus did not leave a useful visible trace in the output.")
 
-    mode_fidelity = sum(seed_coverage) / max(1, len(seed_coverage))
+    topic_discipline = avg_seed_coverage - 0.03 * max(0, metaphor_drift_hits - 1)
+    if sample.mode == "bloom" and topic_discipline < 0.3:
+        failure_tags.append("drifts_off_topic")
+        issues.append("The result wanders so far into lateral metaphor that the original prompt stops feeling legible.")
+    elif sample.mode in {"forage", "revisit"} and topic_discipline < 0.35:
+        failure_tags.append("drifts_off_topic")
+        issues.append("The result loses the user's topic while chasing side material.")
+    elif sample.mode == "collision" and topic_discipline < 0.4:
+        failure_tags.append("drifts_off_topic")
+        issues.append("The result drifts into extra framing instead of staying anchored to the supplied inputs.")
+    else:
+        strengths.append("The ideas stay recognizably connected to the user's actual topic instead of disappearing into decorative detours.")
+
+    mode_fidelity = avg_seed_coverage
     if sample.mode == "collision" and any(score < 0.25 for score in seed_coverage):
         failure_tags.append("collision_not_load_bearing")
         issues.append("At least one collision input barely shows up in the resulting ideas.")
@@ -342,16 +497,18 @@ def _heuristic_assessment(sample: CreativeSample) -> dict[str, Any]:
         "vividness": _clip(vividness),
         "conviction": _clip(conviction),
         "structural_depth": _clip(structural_depth),
+        "topic_discipline": _clip(topic_discipline),
         "randomness_integration": _clip(randomness_integration),
         "mode_fidelity": _clip(mode_fidelity),
     }
     overall_score = _clip(
         (
             axis_scores["output_contract"] * 0.2
-            + axis_scores["ambition"] * 0.2
+            + axis_scores["ambition"] * 0.15
             + axis_scores["vividness"] * 0.15
             + axis_scores["conviction"] * 0.1
-            + axis_scores["structural_depth"] * 0.2
+            + axis_scores["structural_depth"] * 0.15
+            + axis_scores["topic_discipline"] * 0.15
             + axis_scores["randomness_integration"] * 0.05
             + axis_scores["mode_fidelity"] * 0.1
         )
@@ -381,6 +538,13 @@ def _heuristic_assessment(sample: CreativeSample) -> dict[str, Any]:
             IdeaNote(
                 title=_block_title(blocks[0]),
                 why="The output shows feature-level or buzzword-heavy patterns that usually kill an idea on arrival.",
+            )
+        )
+    elif ("surface_analogy" in failure_tags or "mechanism_missing" in failure_tags) and blocks:
+        dead_ideas.append(
+            IdeaNote(
+                title=_block_title(blocks[0]),
+                why="The draft leans on framing or metaphor more than a legible mechanism.",
             )
         )
 
@@ -446,9 +610,11 @@ async def _model_assessment(
 
     provider = get_provider(cfg, provider_name)
     system_prompt = (
-        "You are `realist`, an internal calibration evaluator for pipeidea.\n"
-        "You are critical but reasonable. Your job is to distinguish pipeline bugs from profile issues,\n"
-        "identify what is alive before you explain what is dead, and map failures back to likely markdown files.\n"
+        "You are `realist`, an independent evaluator of idea quality.\n"
+        "Judge the output the way a sharp external critic would: does it stay legibly connected to the prompt,\n"
+        "avoid disappearing into decorative metaphor, and produce ideas that make sense on their own terms?\n"
+        "You may use the supplied mechanical hints, but do not defend the output just because it matches a house style.\n"
+        "Identify what is alive before you explain what is dead, and map failures back to likely prompt-tuning files.\n"
         "Return a single JSON object and no surrounding prose.\n\n"
         f"{rubric_text.strip()}\n\n"
         "Required keys: mechanical_status, overall_score, profile_match_score, mode_match_score, "
@@ -461,9 +627,12 @@ async def _model_assessment(
             "mode": sample.mode,
             "seeds": sample.seeds,
             "stimulus": sample.stimulus,
-            "requested_profile": sample.requested_profile,
         },
-        "trace": sample.trace,
+        "mechanics": {
+            "mode_prompt_present": f"modes/{sample.mode}.md" in {section.get("key") for section in sample.trace.get("prompt_sections", [])},
+            "web_stimulus_count": sample.trace.get("web_stimulus_count", 0),
+            "garden_echo_count": sample.trace.get("garden_echo_count", 0),
+        },
         "output": sample.output,
         "heuristic_findings": {
             "mechanical_status": heuristic["mechanical_status"],

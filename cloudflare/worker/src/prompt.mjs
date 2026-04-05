@@ -44,7 +44,7 @@ export function loadFullProfile(name) {
   return resolveProfileFiles(name);
 }
 
-export function composePrompt({ profile, mode, randomStimulus }) {
+export function composePrompt({ profile, mode, randomStimulus, runtimeGuidance }) {
   const snapshot = resolveProfileFiles(profile);
   const sections = [];
 
@@ -73,6 +73,20 @@ export function composePrompt({ profile, mode, randomStimulus }) {
         "Use it, ignore it, or let it derail you if that makes the idea more alive.",
         "",
         `**Random stimulus:** ${randomStimulus}`
+      ].join("\n")
+    });
+  }
+
+  if (runtimeGuidance) {
+    sections.push({
+      key: "runtime/guidance",
+      title: "Runtime Guidance",
+      content: [
+        "# Runtime Guidance",
+        "",
+        "Honor this situational instruction for the current prompt.",
+        "",
+        runtimeGuidance
       ].join("\n")
     });
   }

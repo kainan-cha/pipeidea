@@ -63,6 +63,7 @@ def compose_prompt(
     random_stimulus: str | None = None,
     garden_echoes: list[str] | None = None,
     web_stimuli: list[str] | None = None,
+    runtime_guidance: str | None = None,
     active_profile_dir: Path | None = None,
     default_profile_dir: Path | None = None,
 ) -> PromptComposition:
@@ -75,6 +76,7 @@ def compose_prompt(
         random_stimulus: A random stimulus string to inject (optional).
         garden_echoes: Past ideas from the garden (optional).
         web_stimuli: Web content for foraging (optional).
+        runtime_guidance: Extra runtime instruction for the current prompt (optional).
 
     Returns:
         The complete system prompt as a string.
@@ -133,7 +135,7 @@ def compose_prompt(
                     f"# Random Stimulus\n\n"
                     f"A random element has been injected into your creative space. "
                     f"You didn't ask for it. It has no obvious connection to anything. "
-                    f"Use it, ignore it, or let it derail you — your call.\n\n"
+                    f"Use it, contain it, or discard it. It may bend the path, but it should not replace the seed.\n\n"
                     f"**Random stimulus:** {random_stimulus}"
                 ),
             )
@@ -168,6 +170,20 @@ def compose_prompt(
                     f"Apply your taste gate ruthlessly — discard anything generic. "
                     f"Keep only what surprises you. Collide the survivors with the seed.\n\n"
                     f"{stimuli_text}"
+                ),
+            )
+        )
+
+    if runtime_guidance:
+        sections.append(
+            PromptSection(
+                key="runtime/guidance",
+                title="Runtime Guidance",
+                kind="runtime",
+                content=(
+                    "# Runtime Guidance\n\n"
+                    "Honor this situational instruction for the current prompt.\n\n"
+                    f"{runtime_guidance}"
                 ),
             )
         )

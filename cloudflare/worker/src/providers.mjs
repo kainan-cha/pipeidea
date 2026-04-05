@@ -196,12 +196,23 @@ async function* streamAnthropic(config, systemPrompt, userMessage) {
 
 export const AVAILABLE_PROVIDERS = ["claude", "openai", "deepseek"];
 
-export async function* streamFromProvider(env, requestedProvider, systemPrompt, userMessage, wild = false) {
+export async function* streamFromProvider(
+  env,
+  requestedProvider,
+  systemPrompt,
+  userMessage,
+  wild = false,
+  sensitivity = null
+) {
   const config = providerConfig(env, requestedProvider);
   const effectiveConfig = {
     ...config,
     temperature: wild ? Math.min(config.temperature + 0.3, 1.5) : config.temperature
   };
+
+  if (sensitivity?.isSensitive && !wild) {
+    effectiveConfig.temperature = Math.min(effectiveConfig.temperature, 0.45);
+  }
 
   if (effectiveConfig.kind === "openai_compat") {
     yield* streamOpenAICompat(effectiveConfig, systemPrompt, userMessage);
