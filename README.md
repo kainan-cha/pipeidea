@@ -1,28 +1,29 @@
 # pipeidea
 
-Pipeidea is a markdown-first idea engine: the profile files define the soul, and the runtime stays thin.
+pipeidea is a markdown-driven idea engine. The core design keeps creative taste in profile files and keeps the runtime focused on prompt assembly, provider dispatch, and evaluation.
 
-Bundled shipped profiles now live under [`src/pipeidea/profiles/default`](/Users/kainan/projects/pipe_idea/src/pipeidea/profiles/default), and the internal evaluator/tuning code lives under [`src/pipeidea/realist`](/Users/kainan/projects/pipe_idea/src/pipeidea/realist).
+## CLI usage
 
-## Local app
+The main entry point is the `pipeidea` CLI:
 
-The current local app is the Python CLI and web UI under [`src/pipeidea`](/Users/kainan/projects/pipe_idea/src/pipeidea).
+```bash
+uv run pipeidea bloom "new kinds of urban food rituals"
+uv run pipeidea collide "public libraries" "time banking"
+uv run pipeidea profile list
+uv run pipeidea calibrate run canary_v1
+```
 
-Useful commands:
+Useful command groups:
 
-- `uv run pipeidea web`
-- `uv run pipeidea calibrate run canary_v1`
+- `bloom`: generate ideas from a single seed
+- `collide`: force two inputs into the same mechanism space
+- `profile`: inspect or create profile overrides
+- `calibrate`: run internal evaluation against seed packs and rubrics
 
-## Cloudflare deploy
+## Sample usage
 
-A Cloudflare-native public deployment now lives under [`cloudflare/worker`](/Users/kainan/projects/pipe_idea/cloudflare/worker).
+```bash
+uv run pipeidea bloom "a social product that makes waiting in line meaningful"
+```
 
-It is intentionally scoped to the public generation experience only:
 
-- static frontend
-- streaming Worker API
-- bundled read-only soul profiles
-
-It does not include calibration or profile-tuning infrastructure.
-
-See [`cloudflare/README.md`](/Users/kainan/projects/pipe_idea/cloudflare/README.md) for setup and deploy steps.
