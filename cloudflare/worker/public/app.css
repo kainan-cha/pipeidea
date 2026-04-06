@@ -1,22 +1,16 @@
 :root {
-  --bg: #08111f;
-  --bg-deep: #050b14;
-  --panel: rgba(10, 19, 34, 0.72);
-  --panel-strong: rgba(12, 23, 40, 0.92);
-  --panel-soft: rgba(255, 255, 255, 0.04);
-  --surface: rgba(255, 255, 255, 0.06);
-  --surface-strong: rgba(255, 255, 255, 0.08);
-  --ink: #e8edf7;
-  --muted: #9eaec8;
-  --line: rgba(184, 202, 233, 0.16);
-  --accent: #6dd3ff;
-  --accent-strong: #8df6d2;
-  --accent-warm: #ffb36d;
-  --danger: #ff9090;
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+  --panel: rgba(247, 250, 255, 0.82);
+  --panel-strong: rgba(241, 246, 254, 0.94);
+  --surface: rgba(255, 255, 255, 0.72);
+  --surface-strong: rgba(255, 255, 255, 0.84);
+  --ink: #182235;
+  --muted: #66748b;
+  --line: rgba(94, 122, 166, 0.16);
+  --accent: #1570ef;
+  --accent-strong: #0f9d8a;
+  --danger: #c24141;
+  --shadow: 0 24px 70px rgba(74, 96, 135, 0.16);
   --radius-xl: 32px;
-  --radius-lg: 24px;
-  --radius-md: 18px;
 }
 
 * { box-sizing: border-box; }
@@ -29,14 +23,15 @@ body {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(109, 211, 255, 0.14), transparent 26rem),
-    radial-gradient(circle at 85% 10%, rgba(141, 246, 210, 0.12), transparent 20rem),
-    linear-gradient(180deg, #0c1628, #07101d 48%, #040a12);
+    radial-gradient(circle at top left, rgba(21, 112, 239, 0.12), transparent 26rem),
+    radial-gradient(circle at 85% 10%, rgba(15, 157, 138, 0.1), transparent 20rem),
+    linear-gradient(180deg, #f7fbff, #eef4fb 52%, #e7eef8);
   color: var(--ink);
   font-family: "SF Pro Display", "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 32px 18px;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 body::before {
@@ -44,8 +39,8 @@ body::before {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    linear-gradient(rgba(94, 122, 166, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(94, 122, 166, 0.03) 1px, transparent 1px);
   background-size: 72px 72px;
   mask-image: radial-gradient(circle at center, black 38%, transparent 88%);
   pointer-events: none;
@@ -57,32 +52,29 @@ body::before {
   height: 34rem;
   border-radius: 50%;
   filter: blur(28px);
-  opacity: 0.22;
+  opacity: 0.3;
   pointer-events: none;
 }
 
 .ambient-one {
   top: -10rem;
   left: -8rem;
-  background: radial-gradient(circle, rgba(109, 211, 255, 0.75), transparent 65%);
+  background: radial-gradient(circle, rgba(21, 112, 239, 0.28), transparent 65%);
 }
 
 .ambient-two {
   right: -10rem;
   bottom: -12rem;
-  background: radial-gradient(circle, rgba(255, 179, 109, 0.55), transparent 62%);
+  background: radial-gradient(circle, rgba(15, 157, 138, 0.22), transparent 62%);
 }
 
 .app-shell {
-  width: min(100%, 1100px);
+  width: min(100%, 1040px);
   margin: 0 auto;
-  display: grid;
-  gap: 18px;
   position: relative;
   z-index: 1;
 }
 
-.hero,
 .book {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -90,57 +82,10 @@ body::before {
   box-shadow: var(--shadow);
 }
 
-.hero {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 24px 28px;
-  border-radius: var(--radius-xl);
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
-    linear-gradient(180deg, rgba(9, 18, 33, 0.92), rgba(7, 14, 26, 0.84));
-}
-
-.eyebrow {
-  margin-bottom: 10px;
-  color: var(--accent);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.hero h1 {
-  margin: 0;
-  font-size: clamp(2rem, 5vw, 3.6rem);
-  line-height: 0.96;
-  letter-spacing: -0.04em;
-}
-
-.hero-copy {
-  max-width: 42rem;
-  margin: 12px 0 0;
-  color: var(--muted);
-  font-size: 1.02rem;
-  line-height: 1.6;
-}
-
-.hero-note {
-  padding: 10px 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(141, 246, 210, 0.24);
-  background: rgba(141, 246, 210, 0.08);
-  color: #dffbf2;
-  font-size: 0.94rem;
-  white-space: nowrap;
-  align-self: start;
-}
-
 .book {
-  min-height: calc(100vh - 190px);
+  min-height: calc(100vh - 64px);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.01)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.2)),
     var(--panel);
   border-radius: var(--radius-xl);
   display: grid;
@@ -154,8 +99,8 @@ body::before {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(circle at top, rgba(109, 211, 255, 0.08), transparent 28rem),
-    linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.015));
+    radial-gradient(circle at top, rgba(21, 112, 239, 0.08), transparent 28rem),
+    linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.18));
   pointer-events: none;
 }
 
@@ -169,7 +114,7 @@ body::before {
   overflow: auto;
   padding: 30px 34px 20px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  scrollbar-color: rgba(94, 122, 166, 0.35) transparent;
 }
 
 #pages:empty::before {
@@ -180,7 +125,7 @@ body::before {
   padding: 22px 24px;
   border: 1px dashed rgba(184, 202, 233, 0.2);
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.44);
   color: var(--muted);
   text-align: center;
   line-height: 1.6;
@@ -203,25 +148,25 @@ body::before {
 
 .entry-card {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(247, 250, 255, 0.82)),
     var(--surface);
-  border: 1px solid rgba(184, 202, 233, 0.12);
+  border: 1px solid rgba(94, 122, 166, 0.12);
   border-radius: 22px;
   padding: 18px 20px;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 14px 34px rgba(0, 0, 0, 0.16);
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 14px 34px rgba(74, 96, 135, 0.08);
 }
 
 .entry-card.prompt-card {
   background:
-    linear-gradient(180deg, rgba(109, 211, 255, 0.09), rgba(109, 211, 255, 0.03)),
-    rgba(109, 211, 255, 0.03);
-  border-color: rgba(109, 211, 255, 0.18);
+    linear-gradient(180deg, rgba(21, 112, 239, 0.11), rgba(21, 112, 239, 0.03)),
+    rgba(21, 112, 239, 0.04);
+  border-color: rgba(21, 112, 239, 0.18);
 }
 
 .entry-card.meta-card {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.5);
   border-style: dashed;
   color: var(--muted);
 }
@@ -235,8 +180,8 @@ body::before {
 .entry-card.loading-card {
   color: var(--muted);
   background:
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03), rgba(109, 211, 255, 0.08), rgba(255, 255, 255, 0.03)),
-    rgba(255, 255, 255, 0.03);
+    linear-gradient(90deg, rgba(255, 255, 255, 0.5), rgba(21, 112, 239, 0.1), rgba(255, 255, 255, 0.5)),
+    rgba(255, 255, 255, 0.52);
   background-size: 200% 100%;
   animation: pulseCard 1.8s linear infinite;
 }
@@ -286,20 +231,20 @@ body::before {
 .rendered blockquote {
   margin: 1em 0;
   padding: 0.1em 0 0.1em 1.1em;
-  border-left: 3px solid rgba(109, 211, 255, 0.36);
+  border-left: 3px solid rgba(21, 112, 239, 0.28);
   color: var(--muted);
 }
 
 .rendered hr {
   border: 0;
-  border-top: 1px solid rgba(184, 202, 233, 0.16);
+  border-top: 1px solid rgba(94, 122, 166, 0.16);
   margin: 1.3em 0;
 }
 
 .rendered code {
   font-family: "SFMono-Regular", "SF Mono", "Cascadia Code", "Courier New", monospace;
   font-size: 0.9em;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(21, 112, 239, 0.08);
   padding: 0.14em 0.38em;
   border-radius: 7px;
 }
@@ -308,8 +253,8 @@ body::before {
   overflow: auto;
   padding: 14px 16px;
   border-radius: 12px;
-  background: rgba(2, 8, 18, 0.72);
-  border: 1px solid rgba(184, 202, 233, 0.1);
+  background: rgba(239, 245, 253, 0.95);
+  border: 1px solid rgba(94, 122, 166, 0.12);
   line-height: 1.45;
   margin: 1em 0;
 }
@@ -330,7 +275,7 @@ body::before {
   padding: 18px 34px 30px;
   border-top: 1px solid var(--line);
   background:
-    linear-gradient(180deg, rgba(6, 12, 22, 0.12), rgba(6, 12, 22, 0.46)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.46), rgba(239, 245, 253, 0.84)),
     var(--panel-strong);
 }
 
@@ -353,22 +298,22 @@ body::before {
   align-items: center;
   gap: 12px;
   padding: 16px 18px;
-  border: 1px solid rgba(184, 202, 233, 0.15);
+  border: 1px solid rgba(94, 122, 166, 0.14);
   border-radius: 22px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(247, 250, 255, 0.82)),
     var(--surface-strong);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 10px 25px rgba(0, 0, 0, 0.16);
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 10px 25px rgba(74, 96, 135, 0.08);
 }
 
 .input-shell:focus-within {
-  border-color: rgba(109, 211, 255, 0.44);
+  border-color: rgba(21, 112, 239, 0.34);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 0 0 4px rgba(109, 211, 255, 0.1),
-    0 16px 40px rgba(0, 0, 0, 0.22);
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    0 0 0 4px rgba(21, 112, 239, 0.08),
+    0 16px 40px rgba(74, 96, 135, 0.12);
 }
 
 .input-prefix {
@@ -390,7 +335,7 @@ body::before {
 }
 
 #command::placeholder {
-  color: #7f91b0;
+  color: #8b98ad;
 }
 
 .hint {
@@ -399,7 +344,7 @@ body::before {
 }
 
 .hint code {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(21, 112, 239, 0.08);
   padding: 0.16em 0.42em;
   border-radius: 7px;
   font-family: "SFMono-Regular", "SF Mono", "Cascadia Code", "Courier New", monospace;
@@ -428,19 +373,8 @@ body::before {
 @media (max-width: 700px) {
   body { padding: 14px; }
 
-  .hero {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 20px;
-    border-radius: 24px;
-  }
-
-  .hero-note {
-    white-space: normal;
-  }
-
   .book {
-    min-height: calc(100vh - 210px);
+    min-height: calc(100vh - 28px);
     border-radius: 24px;
   }
 
