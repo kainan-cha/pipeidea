@@ -297,7 +297,7 @@ INDEX_HTML = r"""<!doctype html>
     <section id="pages" aria-live="polite"></section>
     <footer class="composer">
       <form id="idea-form">
-        <div class="composer-label">Start with a seed, or type <strong>help</strong> to see commands.</div>
+        <div class="composer-label">Start with a seed, or type <strong>/commands</strong> or <strong>/help</strong>.</div>
         <label class="input-shell" for="command">
           <input id="command" autocomplete="off" placeholder='Try "public libraries" or "collide &quot;jazz&quot; &quot;tax policy&quot;"' />
         </label>
@@ -650,12 +650,12 @@ def _help_text() -> str:
         pipeidea idea book
 
         Write a plain sentence to bloom it into an idea draft, or use a command.
+        Use /commands or /help to see browser commands.
 
         Commands
           bloom "seed text" [--forage] [-w] [-P PROFILE] [-p PROVIDER]
           collide "first input" "second input" [-w] [-P PROFILE] [-p PROVIDER]
           profile list
-          profile create NAME
           profile show NAME
           clear
           help
@@ -681,7 +681,7 @@ def _parse_command_text(command_text: str) -> tuple[argparse.Namespace | None, C
     if not command_text:
         return None, CommandResponse(ok=True, output="")
 
-    if command_text in {"help", "--help", "-h"}:
+    if command_text in {"help", "/help", "/commands", "--help", "-h"}:
         return None, CommandResponse(ok=True, output=_help_text())
 
     if command_text == "clear":
@@ -698,7 +698,7 @@ def _parse_command_text(command_text: str) -> tuple[argparse.Namespace | None, C
         args = parser.parse_args(argv)
     except ValueError as exc:
         first_word = command_text.split(maxsplit=1)[0].lower() if command_text.split() else ""
-        known_commands = {"bloom", "collide", "profile", "help", "clear", "--help", "-h"}
+        known_commands = {"bloom", "collide", "profile", "help", "/help", "/commands", "clear", "--help", "-h"}
         if first_word and first_word not in known_commands:
             try:
                 args = parser.parse_args(["bloom", command_text])

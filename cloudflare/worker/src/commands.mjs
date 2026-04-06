@@ -93,7 +93,7 @@ export function helpText(availableProviders) {
   return [
     "# pipeidea",
     "",
-    "Plain text blooms by default.",
+    "Plain text blooms by default. Use `/commands` or `/help` to see browser commands.",
     "",
     "## Commands",
     "- `bloom \"seed text\" [--forage] [-w] [-P PROFILE] [-p PROVIDER]`",
@@ -104,7 +104,6 @@ export function helpText(availableProviders) {
     "- `help`",
     "",
     "## Notes",
-    "- `profile create` is not available in the Cloudflare deployment.",
     `- Available providers: ${availableProviders.join(", ")}`
   ].join("\n");
 }
@@ -114,7 +113,7 @@ export function parseCommand(commandText) {
   if (!trimmed) {
     return { type: "message", ok: true, output: "" };
   }
-  if (trimmed === "help" || trimmed === "--help" || trimmed === "-h") {
+  if (trimmed === "help" || trimmed === "/help" || trimmed === "/commands" || trimmed === "--help" || trimmed === "-h") {
     return { type: "help" };
   }
   if (trimmed === "clear") {
