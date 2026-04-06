@@ -118,7 +118,7 @@ body::before {
 }
 
 #pages:empty::before {
-  content: "Your prompts and responses will appear here.";
+  content: "Ideas that flow like pipe smoke.";
   display: block;
   max-width: 34rem;
   margin: 0 auto;

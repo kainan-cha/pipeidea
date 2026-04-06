@@ -44,7 +44,7 @@ export function loadFullProfile(name) {
   return resolveProfileFiles(name);
 }
 
-export function composePrompt({ profile, mode, randomStimulus, runtimeGuidance }) {
+export function composePrompt({ profile, mode, randomStimulus, runtimeGuidance, webStimuli }) {
   const snapshot = resolveProfileFiles(profile);
   const sections = [];
 
@@ -73,6 +73,23 @@ export function composePrompt({ profile, mode, randomStimulus, runtimeGuidance }
         "Use it, ignore it, or let it derail you if that makes the idea more alive.",
         "",
         `**Random stimulus:** ${randomStimulus}`
+      ].join("\n")
+    });
+  }
+
+  if (webStimuli && webStimuli.length > 0) {
+    const stimuliText = webStimuli.join("\n\n---\n\n");
+    sections.push({
+      key: "runtime/web_stimuli",
+      title: "Web Stimuli",
+      content: [
+        "# Web Stimuli",
+        "",
+        "These are raw materials foraged from the web. Most of it is probably noise. ",
+        "Apply your taste gate ruthlessly — discard anything generic. ",
+        "Keep only what surprises you. Collide the survivors with the seed.",
+        "",
+        stimuliText
       ].join("\n")
     });
   }

@@ -8,6 +8,7 @@ import {
 import { getRandomStimulus, isSeedRich } from "./random-stimulus.mjs";
 import { assessPromptSensitivity } from "./sensitivity.mjs";
 import { detectSeedLanguage, languageGuidance } from "./language.mjs";
+import { fetchSeedUrls } from "./web-fetch.mjs";
 
 function jsonResponse(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
@@ -82,11 +83,22 @@ async function handleStreamRequest(request, env, ctx) {
   ctx.waitUntil((async () => {
     try {
       const profile = parsed.profile || env.PIPEIDEA_DEFAULT_PROFILE || "default";
+
+      // URL extraction: fetch web content from any URLs in seeds.
+      const { effectiveSeeds, webStimuli } = await fetchSeedUrls(parsed.seeds);
+      if (webStimuli.length > 0) {
+        parsed.seeds = effectiveSeeds;
+      }
+
       const randomStimulus = isSeedRich(parsed.seeds, parsed.mode) ? null : getRandomStimulus();
       const sensitivity = assessPromptSensitivity(parsed.seeds, parsed.mode);
 
-      // Language detection: match output language to input language
-      const detectedLang = detectSeedLanguage(parsed.seeds);
+      // Language detection: match output language to input language.
+      // Check seeds first; if seed was a URL (Latin chars), also check fetched content.
+      let detectedLang = detectSeedLanguage(parsed.seeds);
+      if (!detectedLang && webStimuli.length > 0) {
+        detectedLang = detectSeedLanguage(webStimuli);
+      }
       let runtimeGuidance = sensitivity.reason || "";
       if (detectedLang) {
         const langInstruction = languageGuidance(detectedLang);
@@ -133,7 +145,8 @@ async function handleStreamRequest(request, env, ctx) {
           profile,
           mode: parsed.mode,
           randomStimulus,
-          runtimeGuidance
+          runtimeGuidance,
+          webStimuli
         });
         userMessage = composeRenderUserMessage(parsed.seeds, parsed.mode, mechanismSpec);
         if (detectedLang) userMessage += `\n\n[Respond entirely in ${detectedLang}.]`;
@@ -144,7 +157,8 @@ async function handleStreamRequest(request, env, ctx) {
           profile,
           mode: parsed.mode,
           randomStimulus,
-          runtimeGuidance
+          runtimeGuidance,
+          webStimuli
         });
         userMessage = composeUserMessage(parsed.seeds, parsed.mode);
         if (detectedLang) userMessage += `\n\n[Respond entirely in ${detectedLang}.]`;

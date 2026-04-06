@@ -22,6 +22,7 @@ from pipeidea.soul.composer import (
 from pipeidea.soul.profiles import ensure_defaults
 from pipeidea.soul.random_stimulus import get_random_stimulus, is_seed_rich
 from pipeidea.language import detect_seed_language, language_guidance
+from pipeidea.web_fetch import fetch_seed_urls
 
 
 @dataclass(frozen=True)
@@ -281,6 +282,7 @@ async def _run_three_stage(
     active_profile_dir: Path | None,
     default_profile_dir: Path | None,
     detected_language: str | None = None,
+    web_stimuli: list[str] | None = None,
 ) -> tuple[str, str]:
     """Run the 3-stage pipeline: Diverge -> Select -> Render.
 
@@ -328,6 +330,7 @@ async def _run_three_stage(
         mode=mode,
         random_stimulus=stimulus,
         runtime_guidance=runtime_guidance,
+        web_stimuli=web_stimuli,
         active_profile_dir=active_profile_dir,
         default_profile_dir=default_profile_dir,
     )
@@ -361,6 +364,12 @@ async def run_creative_with_trace(
     if active_profile_dir is None and default_profile_dir is None:
         ensure_defaults(cfg)
 
+    # URL extraction: fetch web content from any URLs in seeds.
+    effective_seeds, fetched_stimuli = await fetch_seed_urls(seeds)
+    if fetched_stimuli:
+        web_stimuli = list(web_stimuli or []) + fetched_stimuli
+        seeds = effective_seeds  # Use clean seeds (URLs removed) from here on.
+
     runtime_cfg = replace(cfg)
     if temperature_override is not None:
         runtime_cfg.temperature = temperature_override
@@ -372,8 +381,11 @@ async def run_creative_with_trace(
     if sensitivity.is_sensitive and not wild:
         runtime_cfg.temperature = min(runtime_cfg.temperature, 0.45)
 
-    # Language detection: match output language to input language
+    # Language detection: match output language to input language.
+    # Check seeds first; if seed was a URL (Latin chars), also check fetched content.
     detected_lang = detect_seed_language(seeds)
+    if not detected_lang and web_stimuli:
+        detected_lang = detect_seed_language(web_stimuli)
     if detected_lang:
         lang_instruction = language_guidance(detected_lang)
         runtime_guidance = f"{runtime_guidance}\n\n{lang_instruction}" if runtime_guidance else lang_instruction
@@ -406,6 +418,7 @@ async def run_creative_with_trace(
             active_profile_dir=active_profile_dir,
             default_profile_dir=default_profile_dir,
             detected_language=detected_lang,
+            web_stimuli=web_stimuli,
         )
     else:
         # Single-pass: original behavior
