@@ -653,12 +653,12 @@ def _help_text() -> str:
         Use /commands or /help to see browser commands.
 
         Commands
-          bloom "seed text" [--forage] [-w] [-P PROFILE] [-p PROVIDER]
-          collide "first input" "second input" [-w] [-P PROFILE] [-p PROVIDER]
-          profile list
-          profile show NAME
-          clear
-          help
+          /bloom "seed text" [--forage] [-w] [-P PROFILE] [-p PROVIDER]
+          /collide "first input" "second input" [-w] [-P PROFILE] [-p PROVIDER]
+          /profile list
+          /profile show NAME
+          /clear
+          /help
 
         Notes
           If you just type a phrase with no command, it will be treated like bloom.
@@ -675,6 +675,17 @@ def _format_profile(profile_name: str, files: dict[str, str]) -> str:
     return "\n".join(parts).strip()
 
 
+def _normalize_web_command_token(token: str) -> str:
+    normalized = token.lower()
+    if not normalized.startswith("/"):
+        return token
+
+    bare = normalized[1:]
+    if bare in {"bloom", "collide", "profile", "help", "commands", "clear"}:
+        return bare
+    return token
+
+
 def _parse_command_text(command_text: str) -> tuple[argparse.Namespace | None, CommandResponse | None]:
     """Parse browser command text into argparse namespace or an immediate response."""
     command_text = command_text.strip()
@@ -684,7 +695,7 @@ def _parse_command_text(command_text: str) -> tuple[argparse.Namespace | None, C
     if command_text in {"help", "/help", "/commands", "--help", "-h"}:
         return None, CommandResponse(ok=True, output=_help_text())
 
-    if command_text == "clear":
+    if command_text in {"clear", "/clear"}:
         return None, CommandResponse(ok=True, output="", clear=True)
 
     parser = _build_parser()
@@ -693,12 +704,16 @@ def _parse_command_text(command_text: str) -> tuple[argparse.Namespace | None, C
         argv = shlex.split(command_text)
     except ValueError:
         argv = ["bloom", command_text]
+    else:
+        if argv:
+            argv[0] = _normalize_web_command_token(argv[0])
 
     try:
         args = parser.parse_args(argv)
     except ValueError as exc:
         first_word = command_text.split(maxsplit=1)[0].lower() if command_text.split() else ""
-        known_commands = {"bloom", "collide", "profile", "help", "/help", "/commands", "clear", "--help", "-h"}
+        first_word = _normalize_web_command_token(first_word)
+        known_commands = {"bloom", "collide", "profile", "help", "clear", "--help", "-h"}
         if first_word and first_word not in known_commands:
             try:
                 args = parser.parse_args(["bloom", command_text])

@@ -89,6 +89,19 @@ function parseFlags(tokens) {
   return result;
 }
 
+function normalizeCommandToken(token) {
+  const normalized = String(token || "").toLowerCase();
+  if (!normalized.startsWith("/")) {
+    return token;
+  }
+
+  const bare = normalized.slice(1);
+  if (["bloom", "collide", "profile", "help", "commands", "clear"].includes(bare)) {
+    return bare;
+  }
+  return token;
+}
+
 export function helpText(availableProviders) {
   return [
     "# pipeidea",
@@ -96,12 +109,12 @@ export function helpText(availableProviders) {
     "Plain text blooms by default. Use `/commands` or `/help` to see browser commands.",
     "",
     "## Commands",
-    "- `bloom \"seed text\" [--forage] [-w] [-P PROFILE] [-p PROVIDER]`",
-    "- `collide \"first input\" \"second input\" [-w] [-P PROFILE] [-p PROVIDER]`",
-    "- `profile list`",
-    "- `profile show NAME`",
-    "- `clear`",
-    "- `help`",
+    "- `/bloom \"seed text\" [--forage] [-w] [-P PROFILE] [-p PROVIDER]`",
+    "- `/collide \"first input\" \"second input\" [-w] [-P PROFILE] [-p PROVIDER]`",
+    "- `/profile list`",
+    "- `/profile show NAME`",
+    "- `/clear`",
+    "- `/help`",
     "",
     "## Notes",
     `- Available providers: ${availableProviders.join(", ")}`
@@ -116,7 +129,7 @@ export function parseCommand(commandText) {
   if (trimmed === "help" || trimmed === "/help" || trimmed === "/commands" || trimmed === "--help" || trimmed === "-h") {
     return { type: "help" };
   }
-  if (trimmed === "clear") {
+  if (trimmed === "clear" || trimmed === "/clear") {
     return { type: "clear" };
   }
 
@@ -139,7 +152,7 @@ export function parseCommand(commandText) {
     return { type: "message", ok: true, output: "" };
   }
 
-  const command = tokens[0];
+  const command = normalizeCommandToken(tokens[0]);
   if (command === "bloom") {
     const parsed = parseFlags(tokens.slice(1));
     if (parsed.rest.length === 0) {
