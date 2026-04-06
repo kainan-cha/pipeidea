@@ -21,6 +21,7 @@ from pipeidea.soul.composer import (
 )
 from pipeidea.soul.profiles import ensure_defaults
 from pipeidea.soul.random_stimulus import get_random_stimulus, is_seed_rich
+from pipeidea.language import detect_seed_language, language_guidance
 
 
 @dataclass(frozen=True)
@@ -279,6 +280,7 @@ async def _run_three_stage(
     runtime_guidance: str | None,
     active_profile_dir: Path | None,
     default_profile_dir: Path | None,
+    detected_language: str | None = None,
 ) -> tuple[str, str]:
     """Run the 3-stage pipeline: Diverge -> Select -> Render.
 
@@ -318,11 +320,14 @@ async def _run_three_stage(
 
     # Stage 3: Render — full soul prompt with mechanism as foundation
     render_user_msg = compose_render_user_message(seeds, mode, mechanism_spec)
+    if detected_language:
+        render_user_msg += f"\n\n[Respond entirely in {detected_language}.]"
     render_prompt = compose_prompt(
         cfg=cfg,
         profile=profile,
         mode=mode,
         random_stimulus=stimulus,
+        runtime_guidance=runtime_guidance,
         active_profile_dir=active_profile_dir,
         default_profile_dir=default_profile_dir,
     )
@@ -367,6 +372,12 @@ async def run_creative_with_trace(
     if sensitivity.is_sensitive and not wild:
         runtime_cfg.temperature = min(runtime_cfg.temperature, 0.45)
 
+    # Language detection: match output language to input language
+    detected_lang = detect_seed_language(seeds)
+    if detected_lang:
+        lang_instruction = language_guidance(detected_lang)
+        runtime_guidance = f"{runtime_guidance}\n\n{lang_instruction}" if runtime_guidance else lang_instruction
+
     provider = get_provider(runtime_cfg, provider_name)
 
     # Conditional randomness: skip stimulus for rich seeds
@@ -394,6 +405,7 @@ async def run_creative_with_trace(
             runtime_guidance=runtime_guidance,
             active_profile_dir=active_profile_dir,
             default_profile_dir=default_profile_dir,
+            detected_language=detected_lang,
         )
     else:
         # Single-pass: original behavior
@@ -409,6 +421,8 @@ async def run_creative_with_trace(
             default_profile_dir=default_profile_dir,
         )
         user_message = compose_user_message(seeds, mode)
+        if detected_lang:
+            user_message += f"\n\n[Respond entirely in {detected_lang}.]"
         draft_output = await provider.generate(
             prompt.system_prompt,
             [{"role": "user", "content": user_message}],
