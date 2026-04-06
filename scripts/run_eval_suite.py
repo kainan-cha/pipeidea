@@ -1,7 +1,5 @@
 """Run staged evaluation suites and write a machine-readable report."""
 
-from __future__ import annotations
-
 import argparse
 import asyncio
 import json

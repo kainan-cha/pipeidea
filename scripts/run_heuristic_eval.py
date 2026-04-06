@@ -1,7 +1,5 @@
 """Run a calibration-style generation pass with heuristic or model-backed evaluation."""
 
-from __future__ import annotations
-
 import argparse
 import asyncio
 import json

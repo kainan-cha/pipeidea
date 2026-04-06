@@ -1,7 +1,5 @@
 """Build a mixed evaluation pack from multiple seed pack families."""
 
-from __future__ import annotations
-
 import argparse
 import json
 import random

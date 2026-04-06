@@ -1,20 +1,16 @@
 """Calibration run orchestration and summaries."""
 
-from __future__ import annotations
-
 import json
 import subprocess
 from collections import Counter
+from collections.abc import Callable
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
-from collections.abc import Callable
 
 from pipeidea.realist.artifacts import (
     append_jsonl,
     artifact_paths,
     ensure_directory,
-    find_run_dir,
     load_json,
     load_jsonl,
     write_json,
@@ -492,8 +488,3 @@ def write_promotion_record(
             handle.write("\n")
 
     return version_path
-
-
-def resolve_run_reference(run_ref: str | Path) -> Path:
-    """Resolve a run id or path using the active config."""
-    return find_run_dir(load_config(), run_ref)

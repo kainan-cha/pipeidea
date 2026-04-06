@@ -1,7 +1,5 @@
 """Mapping from evaluator findings to profile tuning targets."""
 
-from __future__ import annotations
-
 FAILURE_FILE_MAP: dict[str, list[str]] = {
     "pipeline_bug": ["python-plumbing"],
     "wrong_profile": ["identity.md", "dialogue.md"],

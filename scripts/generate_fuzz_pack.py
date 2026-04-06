@@ -1,7 +1,5 @@
 """Generate a large deterministic fuzz seed pack for calibration."""
 
-from __future__ import annotations
-
 import argparse
 import json
 import random

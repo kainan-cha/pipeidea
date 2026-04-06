@@ -1,7 +1,5 @@
 """Detect URLs in seeds, fetch their content, and extract readable text."""
 
-from __future__ import annotations
-
 import asyncio
 import re
 from html.parser import HTMLParser

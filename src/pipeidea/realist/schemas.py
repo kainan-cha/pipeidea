@@ -1,7 +1,5 @@
 """Schemas used by the calibration and evaluator tooling."""
 
-from __future__ import annotations
-
 from dataclasses import asdict, dataclass, field, is_dataclass
 from pathlib import Path
 from typing import Any
@@ -260,4 +258,3 @@ class PromotionRecord:
     touched_files: list[str]
     accepted: bool
     notes: str = ""
-

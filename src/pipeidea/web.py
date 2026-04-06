@@ -1,7 +1,5 @@
 """Minimal browser UI for the creative Pipeidea flow."""
 
-from __future__ import annotations
-
 import argparse
 import asyncio
 import json

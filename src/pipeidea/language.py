@@ -1,7 +1,5 @@
 """Detect the dominant language of user seeds via Unicode script analysis."""
 
-from __future__ import annotations
-
 import unicodedata
 
 # Unicode script ranges mapped to language names.

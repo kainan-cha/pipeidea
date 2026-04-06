@@ -20,7 +20,6 @@ class Config:
     default_provider: str = "deepseek"
     anthropic_api_key: str = ""
     openai_api_key: str = ""
-    google_api_key: str = ""
     deepseek_api_key: str = ""
     deepseek_base_url: str = "https://api.deepseek.com/v1"
     deepseek_model: str = "deepseek-chat"
@@ -62,7 +61,6 @@ def load_config() -> Config:
         PIPEIDEA_PROVIDER     — default AI provider
         ANTHROPIC_API_KEY     — Anthropic API key
         OPENAI_API_KEY        — OpenAI API key
-        GOOGLE_API_KEY        — Google AI API key
         DEEPSEEK_API_KEY      — DeepSeek API key
         DEEPSEEK_BASE_URL     — DeepSeek base URL (default: https://api.deepseek.com/v1)
         DEEPSEEK_MODEL        — DeepSeek model name (default: deepseek-chat)
@@ -79,7 +77,6 @@ def load_config() -> Config:
     )
     cfg.anthropic_api_key = os.environ.get("ANTHROPIC_API_KEY", "")
     cfg.openai_api_key = os.environ.get("OPENAI_API_KEY", "")
-    cfg.google_api_key = os.environ.get("GOOGLE_API_KEY", "")
     cfg.deepseek_api_key = os.environ.get("DEEPSEEK_API_KEY", "")
     cfg.deepseek_base_url = os.environ.get("DEEPSEEK_BASE_URL", cfg.deepseek_base_url)
     cfg.deepseek_model = os.environ.get("DEEPSEEK_MODEL", cfg.deepseek_model)

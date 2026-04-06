@@ -1,7 +1,5 @@
 """Heuristics for detecting prompts that need a more grounded register."""
 
-from __future__ import annotations
-
 import re
 from dataclasses import dataclass
 
