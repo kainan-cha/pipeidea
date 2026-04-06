@@ -80,6 +80,7 @@ async def _run_creative(
     profile: str,
     provider_name: str | None,
     wild: bool,
+    single_pass: bool = False,
 ):
     """Core creative flow: compose prompt, call provider, stream output."""
     console.print()
@@ -91,6 +92,7 @@ async def _run_creative(
             provider_name=provider_name,
             wild=wild,
             on_chunk=lambda chunk: console.print(chunk, end="", highlight=False),
+            single_pass=single_pass,
         )
     except Exception as e:
         console.print(f"\n\nError: {e}", style="red")
@@ -105,11 +107,12 @@ def bloom(
     provider: Optional[str] = typer.Option(None, "-p", "--provider", help="AI provider."),
     wild: bool = typer.Option(False, "-w", "--wild", help="Maximum chaos. Drop all restraint."),
     forage: bool = typer.Option(False, "--forage", help="Also forage the web for stimuli."),
+    single_pass: bool = typer.Option(False, "--single-pass", help="Skip 3-stage pipeline, use single-pass generation."),
 ):
     """Bloom mode: give a seed, get wild ideas."""
     cfg = load_config()
     mode = "forage" if forage else "bloom"
-    asyncio.run(_run_creative([seed], mode, profile or cfg.default_profile, provider, wild))
+    asyncio.run(_run_creative([seed], mode, profile or cfg.default_profile, provider, wild, single_pass))
 
 
 @app.command()
@@ -119,11 +122,12 @@ def collide(
     profile: Optional[str] = typer.Option(None, "-P", "--profile", help="Agent profile to use."),
     provider: Optional[str] = typer.Option(None, "-p", "--provider", help="AI provider."),
     wild: bool = typer.Option(False, "-w", "--wild", help="Maximum chaos."),
+    single_pass: bool = typer.Option(False, "--single-pass", help="Skip 3-stage pipeline, use single-pass generation."),
 ):
     """Collision mode: smash two unrelated inputs together."""
     cfg = load_config()
     asyncio.run(
-        _run_creative([seed1, seed2], "collision", profile or cfg.default_profile, provider, wild)
+        _run_creative([seed1, seed2], "collision", profile or cfg.default_profile, provider, wild, single_pass)
     )
 
 

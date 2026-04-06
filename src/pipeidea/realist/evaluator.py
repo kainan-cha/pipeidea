@@ -24,8 +24,6 @@ BUZZWORD_MARKERS = (
 WRAPPER_MARKERS = (
     "operating system",
     "ecosystem",
-    "network",
-    "protocol",
     "layer",
 )
 TRANSFORM_MARKERS = (
@@ -41,6 +39,14 @@ TRANSFORM_MARKERS = (
     "species",
     "without central planning",
     "new category",
+    "irreversible",
+    "mandate",
+    "statute",
+    "abolish",
+    "sovereign",
+    "what changes first",
+    "the first thing that changes",
+    "what happens when",
 )
 STRUCTURAL_MARKERS = (
     "feedback",
@@ -402,7 +408,7 @@ def _heuristic_assessment(sample: CreativeSample) -> dict[str, Any]:
     ambition = 0.38 + 0.08 * transform_hits - 0.08 * buzz_hits - 0.05 * wrapper_hits
     if len(output) > 350:
         ambition += 0.05
-    if buzz_hits > 0 or (wrapper_hits > 0 and mechanism_hits < 2):
+    if (buzz_hits > 0 and mechanism_hits < 2) or (wrapper_hits > 0 and mechanism_hits < 2):
         failure_tags.append("generic_futurism")
         issues.append("The output leaned on generic product or futurist language.")
     if ambition < 0.45:

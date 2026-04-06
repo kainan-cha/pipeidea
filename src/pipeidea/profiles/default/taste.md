@@ -21,24 +21,24 @@ A dead idea sounds clever for exactly one second, then evaporates. It connects t
 - DEAD: "Smart parking lots that use sensors to find open spots."
   - WHY IT'S DEAD: Incremental. Already exists. Could come from anyone. No structural insight.
 
-- ALIVE: "What if parking spaces competed for cars the way flowers compete for pollinators — evolving their signals, pricing, and accessibility in real-time through evolutionary pressure, until the city's parking naturally optimizes itself without any central planning?"
-  - WHY IT'S ALIVE: Deep structural analogy (competition-driven optimization). Reveals something true about both ecology and urban systems. Specific enough to prototype. Makes you think about what other urban systems could self-organize through competition.
+- ALIVE: "Every parking meter runs a live auction — you bid against everyone else who wants that block in the next hour. The price updates every 60 seconds on a public screen. All surplus revenue above maintenance flows directly to the residential block it sits on, split equally among every household within 200 meters. Residents stop opposing street parking because it pays them. Drivers self-sort by urgency. The city gets a real-time demand heat map that replaces every parking study ever commissioned."
+  - WHY IT'S ALIVE: Clear mechanism (auction pricing, revenue distribution, public display). You can name who does what and what changes first. Remove every metaphor and the idea still stands. The scaling insight — that parking-bid data becomes the city's most granular economic signal — opens a door without closing it.
 
 **Seed: "email"**
 
 - DEAD: "An AI that summarizes your emails for you."
   - WHY IT'S DEAD: Feature, not idea. Incremental improvement on existing thing. Boring.
 
-- ALIVE: "What if communication was spatial instead of temporal? Instead of an inbox ordered by time, your messages exist in a landscape — urgent ones are nearby, old conversations are distant mountains you can see but don't need to visit. You walk through your communications, and proximity is relevance."
-  - WHY IT'S ALIVE: Questions the deepest assumption (that communication is a timeline). Creates a vivid mental image. Opens a door to rethinking every interface that's currently a chronological list.
+- ALIVE: "Every message you send embeds a tiny invisible contract: 'I expect a reply within X hours.' Recipients see messages ranked by urgency and social weight, not arrival time. The system infers priority from message length, relationship history, and response patterns — no one manually flags anything. Communication becomes negotiated rather than imposed, and 'inbox zero' stops mattering because the interface surfaces only what actually needs you right now."
+  - WHY IT'S ALIVE: The mechanism is concrete — implicit reply-time contracts, inferred priority scoring, relationship-weighted ranking. You can build this. Strip the framing and the operational spec survives. The deeper move: it questions whether time-ordering was ever the right primitive for communication.
 
 **Seed: "restaurants"**
 
 - DEAD: "A restaurant where the menu changes based on what's trending on social media."
   - WHY IT'S DEAD: Gimmick. Surface connection. You'd try it once and never go back. No structural depth.
 
-- ALIVE: "A restaurant that operates like a jazz ensemble — no fixed menu, no head chef. Five cooks listen to each other's improvisations in real time, responding to what the cook next to them is creating. Each meal is a one-time performance. You're not ordering food, you're attending a culinary concert that will never be repeated."
-  - WHY IT'S ALIVE: Transfers the deep structure of musical improvisation (listening, responding, emergence) to cooking. Creates something genuinely new that couldn't exist without both frames. You immediately want to go.
+- ALIVE: "Five cooks share one open kitchen with no fixed menu and no head chef. Each cook watches what the others are plating and responds in real time — if one starts a broth, another builds a complementary texture, a third pivots to a contrasting flavor. Diners state a mood or constraint ('something bright and acidic, no shellfish'), not a dish. Every meal is a one-time emergent composition. The mechanism: improvisational listening between cooks, mediated by visible mise en place, produces variety that a single chef's vision never could."
+  - WHY IT'S ALIVE: The mechanism is visible in every sentence — who does what (cooks respond to each other), by what interface (visible mise en place), what changes (menu emerges from real-time negotiation). Remove the jazz analogy entirely and the idea still works because the operational description carries it.
 
 ## Dead Patterns to Kill on Sight
 

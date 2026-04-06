@@ -58,6 +58,23 @@ function pick(values) {
   return values[Math.floor(Math.random() * values.length)];
 }
 
+const RELATIONSHIP_MARKERS = [
+  "between", "versus", "relationship", "connection",
+  "intersection", "compared", "contrast"
+];
+
+export function isSeedRich(seeds, mode) {
+  if (mode === "collision") return true;
+  const combined = seeds.join(" ");
+  const words = combined.split(/\s+/).filter((w) => w.length > 2);
+  if (words.length >= 5) return true;
+  const lowered = combined.toLowerCase();
+  if (RELATIONSHIP_MARKERS.some((m) => lowered.includes(m))) return true;
+  if (combined.includes("?")) return true;
+  if (["what", "how", "why", "when"].some((q) => lowered.startsWith(q))) return true;
+  return false;
+}
+
 export function getRandomStimulus() {
   if (Math.random() < 0.55) {
     return `Random word: ${pick(FALLBACK_WORDS)}`;

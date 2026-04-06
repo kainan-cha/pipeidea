@@ -200,6 +200,181 @@ def compose_prompt(
     )
 
 
+_DIVERGE_PREAMBLE = """\
+You are an idea mechanism generator. Your job is to produce three distinct, \
+concrete mechanism sketches for a creative prompt. Do not write prose, titles, \
+or metaphors. Write in plain operational language: who does what, by what rule \
+or material or incentive, and what changes first.
+
+Each candidate must:
+- Describe a specific mechanism, not a mood or metaphor
+- Stay visibly connected to the user's seed
+- Be ambitious (level 7-10: the kind of idea that makes people nervous)
+- Pass this test: if you remove all analogy and figurative language, is there \
+still an operational mechanism left?
+
+Kill on sight:
+- Surface analogy ("X is like Y" without shared deep structure)
+- Generic futurism ("AI-powered X", "blockchain-based Y")
+- Wrapper ambition (calling something a platform/ecosystem/protocol without \
+changing the underlying mechanism)
+- Incremental improvement (a better version of an existing thing)
+
+Output exactly this format, nothing else:
+
+CANDIDATE 1:
+Mechanism: [2-3 sentences. What happens? Who does what, by what rule/material/\
+incentive/interface? What changes first?]
+Seed connection: [1 sentence. How does this directly answer the user's prompt?]
+Ambition: [1 sentence. What does the world look like if this wins?]
+
+CANDIDATE 2:
+Mechanism: [...]
+Seed connection: [...]
+Ambition: [...]
+
+CANDIDATE 3:
+Mechanism: [...]
+Seed connection: [...]
+Ambition: [...]
+"""
+
+_SELECT_PREAMBLE = """\
+You are a taste judge for creative ideas. You will receive three mechanism \
+candidates and the original seed. Pick the single best one.
+
+Selection criteria (in order):
+1. Strongest mechanism — can you explain what happens in plain language?
+2. Most ambitious — does it change a category, not just improve a product?
+3. Closest to seed — is the user's prompt still visibly load-bearing?
+4. Passes the "remove the metaphor" test — is anything left without analogy?
+
+Output exactly this format, nothing else:
+
+WINNER: [1, 2, or 3]
+REASON: [1 sentence explaining why this candidate beats the others]
+"""
+
+
+def compose_diverge_prompt(
+    *,
+    cfg: Config,
+    profile: str,
+    mode: str,
+    random_stimulus: str | None = None,
+    runtime_guidance: str | None = None,
+    active_profile_dir: Path | None = None,
+    default_profile_dir: Path | None = None,
+) -> PromptComposition:
+    """Build the Stage 1 (Diverge) system prompt — mechanism generation only.
+
+    Uses a minimal subset of the soul: just invention-relevant rules
+    (mechanism test, dead patterns, false bigness, mode instructions).
+    """
+    if active_profile_dir is None and default_profile_dir is None:
+        ensure_defaults(cfg)
+
+    snapshot = load_profile_snapshot(
+        cfg=cfg,
+        profile=profile,
+        active_profile_dir=active_profile_dir,
+        default_profile_dir=default_profile_dir,
+    )
+
+    sections: list[PromptSection] = []
+
+    # Preamble with structured output format
+    sections.append(
+        PromptSection(
+            key="diverge_preamble",
+            title="Diverge Preamble",
+            content=_DIVERGE_PREAMBLE,
+            kind="pipeline",
+        )
+    )
+
+    # Mode-specific instructions (important for collision mechanics)
+    mode_key = f"modes/{mode}.md"
+    _add_soul_section(sections, snapshot, mode_key, f"Mode: {mode}")
+
+    # Random stimulus (if applicable)
+    if random_stimulus:
+        sections.append(
+            PromptSection(
+                key="runtime/random_stimulus",
+                title="Random Stimulus",
+                kind="runtime",
+                content=(
+                    f"A random element for creative perturbation. "
+                    f"Use it only if it strengthens a mechanism. Discard it if it weakens topic discipline.\n\n"
+                    f"**Random stimulus:** {random_stimulus}"
+                ),
+            )
+        )
+
+    if runtime_guidance:
+        sections.append(
+            PromptSection(
+                key="runtime/guidance",
+                title="Runtime Guidance",
+                kind="runtime",
+                content=runtime_guidance,
+            )
+        )
+
+    system_prompt = "\n\n---\n\n".join(section.content for section in sections)
+    return PromptComposition(
+        profile=profile,
+        active_profile_dir=str(snapshot.active_profile_dir),
+        default_profile_dir=(
+            str(snapshot.default_profile_dir) if snapshot.default_profile_dir is not None else None
+        ),
+        sections=sections,
+        system_prompt=system_prompt,
+    )
+
+
+def compose_select_prompt() -> str:
+    """Build the Stage 2 (Select) system prompt — taste judgment."""
+    return _SELECT_PREAMBLE
+
+
+def compose_diverge_user_message(seeds: list[str], mode: str) -> str:
+    """Build the user message for Stage 1 (Diverge)."""
+    base = compose_user_message(seeds, mode)
+    return f"{base}\n\nGenerate three mechanism candidates. No prose, no titles, no metaphors."
+
+
+def compose_select_user_message(
+    seeds: list[str], mode: str, candidates: str
+) -> str:
+    """Build the user message for Stage 2 (Select)."""
+    seed_text = " + ".join(seeds)
+    return (
+        f"Original seed: {seed_text}\n"
+        f"Mode: {mode}\n\n"
+        f"Candidates:\n\n{candidates}\n\n"
+        "Pick the best candidate."
+    )
+
+
+def compose_render_user_message(
+    seeds: list[str], mode: str, mechanism_spec: str
+) -> str:
+    """Build the user message for Stage 3 (Render)."""
+    base = compose_user_message(seeds, mode)
+    return (
+        f"{base}\n\n"
+        "You have already extracted the core mechanism. Here it is:\n\n"
+        "---\n"
+        f"{mechanism_spec}\n"
+        "---\n\n"
+        "Render this mechanism into your final output. The mechanism is your "
+        "foundation — preserve it faithfully. Your job now is voice, vividness, "
+        "and format. Do not invent a new mechanism; deepen and render the one above."
+    )
+
+
 def compose_user_message(seeds: list[str], mode: str) -> str:
     """Build the user message for the AI call.
 

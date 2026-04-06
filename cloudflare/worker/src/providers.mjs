@@ -196,6 +196,73 @@ async function* streamAnthropic(config, systemPrompt, userMessage) {
 
 export const AVAILABLE_PROVIDERS = ["claude", "openai", "deepseek"];
 
+export async function generateFromProvider(
+  env,
+  requestedProvider,
+  systemPrompt,
+  userMessage,
+  { temperature = null, wild = false, sensitivity = null } = {}
+) {
+  const config = providerConfig(env, requestedProvider);
+  const effectiveConfig = {
+    ...config,
+    temperature: temperature ?? (wild ? Math.min(config.temperature + 0.3, 1.5) : config.temperature)
+  };
+  if (sensitivity?.isSensitive && !wild) {
+    effectiveConfig.temperature = Math.min(effectiveConfig.temperature, 0.45);
+  }
+
+  if (effectiveConfig.kind === "openai_compat") {
+    const response = await fetch(`${effectiveConfig.baseUrl}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${effectiveConfig.apiKey}`
+      },
+      body: JSON.stringify({
+        model: effectiveConfig.model,
+        temperature: effectiveConfig.temperature,
+        max_tokens: 4096,
+        stream: false,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userMessage }
+        ]
+      })
+    });
+    if (!response.ok) {
+      throw new Error(`Provider error (${effectiveConfig.name}): ${await response.text()}`);
+    }
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content || "";
+  }
+
+  // Anthropic non-streaming
+  const response = await fetch(`${effectiveConfig.baseUrl}/messages`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": effectiveConfig.apiKey,
+      "anthropic-version": "2023-06-01"
+    },
+    body: JSON.stringify({
+      model: effectiveConfig.model,
+      temperature: effectiveConfig.temperature,
+      max_tokens: 4096,
+      stream: false,
+      system: systemPrompt,
+      messages: [
+        { role: "user", content: userMessage }
+      ]
+    })
+  });
+  if (!response.ok) {
+    throw new Error(`Provider error (${effectiveConfig.name}): ${await response.text()}`);
+  }
+  const data = await response.json();
+  return data.content?.[0]?.text || "";
+}
+
 export async function* streamFromProvider(
   env,
   requestedProvider,

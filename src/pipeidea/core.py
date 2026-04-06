@@ -5,12 +5,22 @@ from hashlib import sha256
 from pathlib import Path
 from collections.abc import Callable
 
+import re
+
 from pipeidea.config import Config, load_config
 from pipeidea.providers.registry import get_provider
 from pipeidea.sensitivity import assess_prompt_sensitivity
-from pipeidea.soul.composer import compose_prompt, compose_user_message
+from pipeidea.soul.composer import (
+    compose_prompt,
+    compose_user_message,
+    compose_diverge_prompt,
+    compose_select_prompt,
+    compose_diverge_user_message,
+    compose_select_user_message,
+    compose_render_user_message,
+)
 from pipeidea.soul.profiles import ensure_defaults
-from pipeidea.soul.random_stimulus import get_random_stimulus
+from pipeidea.soul.random_stimulus import get_random_stimulus, is_seed_rich
 
 
 @dataclass(frozen=True)
@@ -32,6 +42,8 @@ class CreativeRunTrace:
     temperature: float
     active_profile_dir: str | None
     default_profile_dir: str | None
+    pipeline: str  # "three-stage" or "single-pass"
+    mechanism_spec: str | None
     revision_attempted: bool
     revision_applied: bool
     initial_failure_tags: list[str]
@@ -120,6 +132,7 @@ async def _maybe_refine_output(
     stimulus: str | None,
     draft_output: str,
     draft_assessment,
+    mechanism_spec: str | None = None,
 ) -> tuple[str, bool, list[str], list[str]]:
     trigger_tags = [tag for tag in draft_assessment.failure_tags if tag in _REVISION_TAG_WEIGHTS]
     if not trigger_tags:
@@ -162,10 +175,16 @@ async def _maybe_refine_output(
         "Mark exactly one favorite with the pipe emoji and end with a sentence that leaves forward pull.\n"
         "Return only the revised final answer with no notes about the editing process."
     )
+    mechanism_section = ""
+    if mechanism_spec:
+        mechanism_section = (
+            f"Original mechanism spec (preserve this faithfully):\n{mechanism_spec}\n\n"
+        )
     user_prompt = (
         f"Mode: {mode}\n"
         f"Seeds:\n{seed_text}\n\n"
         f"Random stimulus: {stimulus or '(none)'}\n\n"
+        f"{mechanism_section}"
         "Revision priorities:\n"
         f"{revision_guidance or '- Tighten the answer while preserving the strongest idea.'}\n\n"
         "Heuristic critique of the draft:\n"
@@ -227,6 +246,95 @@ async def _maybe_refine_output(
     )
 
 
+def _parse_winner(select_output: str, candidates_text: str) -> str:
+    """Extract the winning candidate from the select stage output."""
+    match = re.search(r"WINNER:\s*(\d)", select_output)
+    if not match:
+        # Fallback: return first candidate
+        return _extract_candidate(candidates_text, 1)
+    winner_idx = int(match.group(1))
+    return _extract_candidate(candidates_text, winner_idx)
+
+
+def _extract_candidate(candidates_text: str, idx: int) -> str:
+    """Extract a specific candidate block from the diverge output."""
+    # Split on CANDIDATE N: headers
+    parts = re.split(r"CANDIDATE\s+\d+:", candidates_text)
+    # parts[0] is before first candidate, parts[1..] are the candidates
+    if idx < len(parts):
+        return parts[idx].strip()
+    # Fallback to first candidate
+    return parts[1].strip() if len(parts) > 1 else candidates_text.strip()
+
+
+async def _run_three_stage(
+    *,
+    seeds: list[str],
+    mode: str,
+    profile: str,
+    provider_name: str | None,
+    cfg: Config,
+    runtime_cfg: Config,
+    stimulus: str | None,
+    runtime_guidance: str | None,
+    active_profile_dir: Path | None,
+    default_profile_dir: Path | None,
+) -> tuple[str, str]:
+    """Run the 3-stage pipeline: Diverge -> Select -> Render.
+
+    Returns (mechanism_spec, rendered_output).
+    """
+    # Stage 1: Diverge — generate 3 mechanism candidates
+    diverge_prompt = compose_diverge_prompt(
+        cfg=cfg,
+        profile=profile,
+        mode=mode,
+        random_stimulus=stimulus,
+        runtime_guidance=runtime_guidance,
+        active_profile_dir=active_profile_dir,
+        default_profile_dir=default_profile_dir,
+    )
+    diverge_user_msg = compose_diverge_user_message(seeds, mode)
+    diverge_cfg = replace(runtime_cfg)
+    # Keep temperature high for variety in diverge stage
+    diverge_provider = get_provider(diverge_cfg, provider_name)
+    candidates_text = await diverge_provider.generate(
+        diverge_prompt.system_prompt,
+        [{"role": "user", "content": diverge_user_msg}],
+    )
+
+    # Stage 2: Select — pick the best candidate
+    select_system = compose_select_prompt()
+    select_user_msg = compose_select_user_message(seeds, mode, candidates_text)
+    select_cfg = replace(runtime_cfg)
+    select_cfg.temperature = 0.3
+    select_provider = get_provider(select_cfg, provider_name)
+    select_output = await select_provider.generate(
+        select_system,
+        [{"role": "user", "content": select_user_msg}],
+    )
+
+    mechanism_spec = _parse_winner(select_output, candidates_text)
+
+    # Stage 3: Render — full soul prompt with mechanism as foundation
+    render_user_msg = compose_render_user_message(seeds, mode, mechanism_spec)
+    render_prompt = compose_prompt(
+        cfg=cfg,
+        profile=profile,
+        mode=mode,
+        random_stimulus=stimulus,
+        active_profile_dir=active_profile_dir,
+        default_profile_dir=default_profile_dir,
+    )
+    render_provider = get_provider(runtime_cfg, provider_name)
+    rendered_output = await render_provider.generate(
+        render_prompt.system_prompt,
+        [{"role": "user", "content": render_user_msg}],
+    )
+
+    return mechanism_spec, rendered_output
+
+
 async def run_creative_with_trace(
     seeds: list[str],
     mode: str,
@@ -241,6 +349,7 @@ async def run_creative_with_trace(
     active_profile_dir: Path | None = None,
     default_profile_dir: Path | None = None,
     temperature_override: float | None = None,
+    single_pass: bool = False,
 ) -> CreativeRunResult:
     """Run the core creative flow and return output plus trace metadata."""
     cfg = cfg or load_config()
@@ -260,13 +369,52 @@ async def run_creative_with_trace(
 
     provider = get_provider(runtime_cfg, provider_name)
 
+    # Conditional randomness: skip stimulus for rich seeds
     stimulus = random_stimulus_override
-    if stimulus is None:
+    if stimulus is None and not is_seed_rich(seeds, mode):
         try:
             stimulus = get_random_stimulus()
         except Exception:
             stimulus = None
 
+    # Decide pipeline: three-stage by default, single-pass if wild or requested
+    use_three_stage = not wild and not single_pass
+    pipeline_name = "three-stage" if use_three_stage else "single-pass"
+
+    mechanism_spec: str | None = None
+    if use_three_stage:
+        mechanism_spec, draft_output = await _run_three_stage(
+            seeds=seeds,
+            mode=mode,
+            profile=profile,
+            provider_name=provider_name,
+            cfg=cfg,
+            runtime_cfg=runtime_cfg,
+            stimulus=stimulus,
+            runtime_guidance=runtime_guidance,
+            active_profile_dir=active_profile_dir,
+            default_profile_dir=default_profile_dir,
+        )
+    else:
+        # Single-pass: original behavior
+        prompt = compose_prompt(
+            cfg=cfg,
+            profile=profile,
+            mode=mode,
+            random_stimulus=stimulus,
+            garden_echoes=garden_echoes,
+            web_stimuli=web_stimuli,
+            runtime_guidance=runtime_guidance,
+            active_profile_dir=active_profile_dir,
+            default_profile_dir=default_profile_dir,
+        )
+        user_message = compose_user_message(seeds, mode)
+        draft_output = await provider.generate(
+            prompt.system_prompt,
+            [{"role": "user", "content": user_message}],
+        )
+
+    # Build prompt for trace (always needed for heuristic assessment)
     prompt = compose_prompt(
         cfg=cfg,
         profile=profile,
@@ -279,7 +427,6 @@ async def run_creative_with_trace(
         default_profile_dir=default_profile_dir,
     )
     user_message = compose_user_message(seeds, mode)
-    messages = [{"role": "user", "content": user_message}]
 
     trace = CreativeRunTrace(
         requested_profile=profile,
@@ -307,12 +454,13 @@ async def run_creative_with_trace(
         temperature=runtime_cfg.temperature,
         active_profile_dir=prompt.active_profile_dir,
         default_profile_dir=prompt.default_profile_dir,
+        pipeline=pipeline_name,
+        mechanism_spec=mechanism_spec,
         revision_attempted=False,
         revision_applied=False,
         initial_failure_tags=[],
         final_failure_tags=[],
     )
-    draft_output = await provider.generate(prompt.system_prompt, messages)
     draft_assessment = await _heuristic_assessment_for_output(
         cfg=cfg,
         run_id="live-draft",
@@ -341,6 +489,7 @@ async def run_creative_with_trace(
             stimulus=stimulus,
             draft_output=draft_output,
             draft_assessment=draft_assessment,
+            mechanism_spec=mechanism_spec,
         )
         revision_applied = final_output != draft_output
         trace = replace(
@@ -364,6 +513,7 @@ async def run_creative(
     provider_name: str | None,
     wild: bool,
     on_chunk: Callable[[str], None] | None = None,
+    single_pass: bool = False,
 ) -> str:
     """Run the core creative flow and optionally stream chunks to a callback."""
     result = await run_creative_with_trace(
@@ -373,5 +523,6 @@ async def run_creative(
         provider_name=provider_name,
         wild=wild,
         on_chunk=on_chunk,
+        single_pass=single_pass,
     )
     return result.output

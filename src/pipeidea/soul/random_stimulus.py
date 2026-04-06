@@ -39,6 +39,39 @@ _FALLBACK_FACTS = [
 ]
 
 
+def is_seed_rich(seeds: list[str], mode: str) -> bool:
+    """Return True if the seed(s) are rich enough to skip random stimulus.
+
+    Rich seeds already contain enough creative tension; injecting randomness
+    tends to pull the model off-topic rather than adding value.
+    """
+    # Collision mode: two inputs already provide creative tension
+    if mode == "collision":
+        return True
+
+    combined = " ".join(seeds)
+    words = [w for w in combined.split() if len(w) > 2]
+
+    # Multi-word compound concepts are rich
+    if len(words) >= 5:
+        return True
+
+    # Relationship markers suggest compound concepts
+    relationship_markers = (
+        "between", "versus", "relationship", "connection",
+        "intersection", "compared", "contrast",
+    )
+    lowered = combined.lower()
+    if any(marker in lowered for marker in relationship_markers):
+        return True
+
+    # Questions are usually rich
+    if "?" in combined or any(lowered.startswith(q) for q in ("what", "how", "why", "when")):
+        return True
+
+    return False
+
+
 def get_random_stimulus() -> str:
     """Get a random stimulus to inject into the creative process.
 

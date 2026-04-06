@@ -1,7 +1,11 @@
-import { AVAILABLE_PROVIDERS, streamFromProvider } from "./providers.mjs";
+import { AVAILABLE_PROVIDERS, streamFromProvider, generateFromProvider } from "./providers.mjs";
 import { parseCommand, helpText } from "./commands.mjs";
-import { composePrompt, composeUserMessage, formatProfile, listProfiles } from "./prompt.mjs";
-import { getRandomStimulus } from "./random-stimulus.mjs";
+import {
+  composePrompt, composeUserMessage, formatProfile, listProfiles,
+  composeDivergePrompt, composeSelectPrompt,
+  composeDivergeUserMessage, composeSelectUserMessage, composeRenderUserMessage
+} from "./prompt.mjs";
+import { getRandomStimulus, isSeedRich } from "./random-stimulus.mjs";
 import { assessPromptSensitivity } from "./sensitivity.mjs";
 
 function jsonResponse(payload, status = 200) {
@@ -77,24 +81,70 @@ async function handleStreamRequest(request, env, ctx) {
   ctx.waitUntil((async () => {
     try {
       const profile = parsed.profile || env.PIPEIDEA_DEFAULT_PROFILE || "default";
-      const randomStimulus = getRandomStimulus();
+      const randomStimulus = isSeedRich(parsed.seeds, parsed.mode) ? null : getRandomStimulus();
       const sensitivity = assessPromptSensitivity(parsed.seeds, parsed.mode);
-      const prompt = composePrompt({
-        profile,
-        mode: parsed.mode,
-        randomStimulus,
-        runtimeGuidance: sensitivity.reason
-      });
-      const userMessage = composeUserMessage(parsed.seeds, parsed.mode);
+      const useThreeStage = !parsed.wild;
 
       await emit(writer, { type: "start", ok: true, output: "Thinking..." });
+
+      let userMessage;
+      let systemPrompt;
+
+      if (useThreeStage) {
+        // Stage 1: Diverge — generate 3 mechanism candidates
+        const divergePrompt = composeDivergePrompt({
+          profile,
+          mode: parsed.mode,
+          randomStimulus,
+          runtimeGuidance: sensitivity.reason
+        });
+        const divergeUserMsg = composeDivergeUserMessage(parsed.seeds, parsed.mode);
+        const candidatesText = await generateFromProvider(
+          env, parsed.provider, divergePrompt.systemPrompt, divergeUserMsg,
+          { sensitivity }
+        );
+
+        // Stage 2: Select — pick the best candidate
+        const selectSystem = composeSelectPrompt();
+        const selectUserMsg = composeSelectUserMessage(parsed.seeds, parsed.mode, candidatesText);
+        const selectOutput = await generateFromProvider(
+          env, parsed.provider, selectSystem, selectUserMsg,
+          { temperature: 0.3 }
+        );
+
+        // Parse winner
+        const winnerMatch = selectOutput.match(/WINNER:\s*(\d)/);
+        const winnerIdx = winnerMatch ? parseInt(winnerMatch[1]) : 1;
+        const candidateParts = candidatesText.split(/CANDIDATE\s+\d+:/);
+        const mechanismSpec = (candidateParts[winnerIdx] || candidateParts[1] || candidatesText).trim();
+
+        // Stage 3: Render — full soul prompt with mechanism
+        const renderPrompt = composePrompt({
+          profile,
+          mode: parsed.mode,
+          randomStimulus,
+          runtimeGuidance: sensitivity.reason
+        });
+        userMessage = composeRenderUserMessage(parsed.seeds, parsed.mode, mechanismSpec);
+        systemPrompt = renderPrompt.systemPrompt;
+      } else {
+        // Single-pass (wild mode)
+        const prompt = composePrompt({
+          profile,
+          mode: parsed.mode,
+          randomStimulus,
+          runtimeGuidance: sensitivity.reason
+        });
+        userMessage = composeUserMessage(parsed.seeds, parsed.mode);
+        systemPrompt = prompt.systemPrompt;
+      }
 
       let fullOutput = "";
       for await (
         const chunk of streamFromProvider(
           env,
           parsed.provider,
-          prompt.systemPrompt,
+          systemPrompt,
           userMessage,
           parsed.wild,
           sensitivity
