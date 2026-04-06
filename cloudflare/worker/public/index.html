@@ -7,17 +7,34 @@
   <link rel="stylesheet" href="/app.css">
 </head>
 <body>
-  <main class="book">
-    <section id="pages" aria-live="polite"></section>
-    <footer class="composer">
-      <form id="idea-form">
-        <div class="composer-label">Start with a seed, or type <strong>help</strong> to see commands.</div>
-        <label class="input-shell" for="command">
-          <input id="command" autocomplete="off" placeholder='Try "public libraries" or "collide &quot;jazz&quot; &quot;tax policy&quot;"'>
-        </label>
-      </form>
-      <div class="hint">Enter submits. <code>clear</code> resets the page.</div>
-    </footer>
+  <div class="ambient ambient-one" aria-hidden="true"></div>
+  <div class="ambient ambient-two" aria-hidden="true"></div>
+
+  <main class="app-shell">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Pipeidea</div>
+        <h1>Fast prompts, cleaner thinking.</h1>
+        <p class="hero-copy">Keep the same simple command box, now with a calmer, more polished workspace for ideas, collisions, and quick experiments.</p>
+      </div>
+      <div class="hero-note">Type a seed, run a command, press Enter.</div>
+    </section>
+
+    <section class="book">
+      <section id="pages" aria-live="polite"></section>
+      <footer class="composer">
+        <form id="idea-form">
+          <div class="composer-row">
+            <div class="composer-label">Start with a seed, or type <strong>help</strong> to see commands.</div>
+            <div class="hint">Enter submits. <code>clear</code> resets the page.</div>
+          </div>
+          <label class="input-shell" for="command">
+            <span class="input-prefix" aria-hidden="true">›</span>
+            <input id="command" autocomplete="off" placeholder='Try "public libraries" or "collide &quot;jazz&quot; &quot;tax policy&quot;"'>
+          </label>
+        </form>
+      </footer>
+    </section>
   </main>
   <script type="module" src="/app.js"></script>
 </body>
